@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac7624703fe7e95b2551b27f50ca2c60",
+    "content-hash": "ff16262e0fc407890e7bc82a3fb7ae2b",
     "packages": [
         {
             "name": "setbased/exception",
@@ -2380,6 +2380,47 @@
                 }
             ],
             "time": "2020-09-28T06:39:44+00:00"
+        },
+        {
+            "name": "symplify/easy-ci",
+            "version": "11.1.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symplify/easy-ci.git",
+                "reference": "ab4704daed187a60ff4e5d574ea725b2b0e5b526"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symplify/easy-ci/zipball/ab4704daed187a60ff4e5d574ea725b2b0e5b526",
+                "reference": "ab4704daed187a60ff4e5d574ea725b2b0e5b526",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "bin": [
+                "bin/easy-ci"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Toolkit of commands that should not be missed in you CI",
+            "support": {
+                "source": "https://github.com/symplify/easy-ci/tree/11.1.20"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rectorphp",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-12-19T12:26:19+00:00"
         },
         {
             "name": "symplify/easy-coding-standard",
