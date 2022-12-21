@@ -5,7 +5,7 @@ on:
     push:
         branches:
             - develop
-            - master
+            - main
 
 jobs:
     provide_php_versions_json:
