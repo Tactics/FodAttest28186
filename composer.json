@@ -1,0 +1,36 @@
+{
+    "name": "tactics/fod-attest-28186",
+    "description": "This is a package for generating the XML needed for Tax Certificate 281.86",
+    "require": {
+        "php": ">=7.4",
+        "setbased/rijksregisternummer": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tactics\\FodAttest28186\\": "src/"
+        }
+    },
+    "require-dev": {
+        "symplify/easy-coding-standard": "^11.1",
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.9"
+    },
+    "scripts": {
+        "ecs-fix": [
+            "./vendor/bin/ecs check --config ecs.php --fix"
+        ],
+        "ecs": [
+            "./vendor/bin/ecs check --config ecs.php"
+        ],
+        "phpunit": [
+            "./vendor/bin/phpunit"
+        ],
+        "phpstan": [
+            "./vendor/bin/phpstan analyse --memory-limit=-1 --ansi"
+        ],
+        "phpstan-cli": [
+            "./vendor/bin/phpstan analyse --memory-limit=-1 --error-format github --ansi"
+        ]
+    }
+}

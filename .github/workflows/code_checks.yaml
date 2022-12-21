@@ -1,0 +1,79 @@
+name: CodeChecks
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - develop
+            - master
+
+jobs:
+    provide_php_versions_json:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    # this is the only place we have to use PHP to avoid the lock to bash scripting
+                    php-version: 7.4
+
+            -   run: composer clearcache
+            -   run: composer install --no-progress --ansi
+
+            # to see the provided output, just to be sure
+            -   run: vendor/bin/easy-ci php-versions-json
+
+            # here we create the json, we need the "id:" so we can use it in "outputs" bellow
+            -   id: output_data
+                run: echo "::set-output name=matrix::$(vendor/bin/easy-ci php-versions-json)"
+
+        # here, we save the result of this 1st phase to the "outputs"
+        outputs:
+            matrix: ${{ steps.output_data.outputs.matrix }}
+
+    test:
+        needs: provide_php_versions_json
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ${{ fromJson(needs.provide_php_versions_json.outputs.matrix) }}
+        name: Tests [${{ matrix.php }}]
+        steps:
+            -   uses: actions/checkout@v2
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: none
+                    tools: composer:v2
+            -   run: git --version
+            -   run: git config --global user.email "test@github.com"
+            -   run: git config --global user.name "GitHub Action"
+            -   run: git --version
+            -   run: composer clearcache
+            -   run: composer install --no-progress --ansi
+            -   run: composer phpunit
+
+    static_analysis:
+        needs: provide_php_versions_json
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ${{ fromJson(needs.provide_php_versions_json.outputs.matrix) }}
+        name: Static Analysis [${{ matrix.php }}]
+        steps:
+            -   uses: actions/checkout@v2
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    coverage: none
+                    tools: composer:v2
+            -   run: git --version
+            -   run: git config --global user.email "test@github.com"
+            -   run: git config --global user.name "GitHub Action"
+            -   run: git --version
+            -   run: composer clearcache
+            -   run: composer install --no-progress --ansi
+            -   run: composer phpstan-cli
