@@ -21,23 +21,17 @@ jobs:
             -   run: composer clearcache
             -   run: composer install --no-progress --ansi
 
-        # here, we save the result of this 1st phase to the "outputs"
-        outputs:
-            matrix: [7.4]
-
     test:
         needs: provide_php_versions_json
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-            matrix:
-                php: ${{ fromJson(needs.provide_php_versions_json.outputs.matrix) }}
-        name: Tests [${{ matrix.php }}]
+        name: Tests [7.4]
         steps:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: 7.4
                     coverage: none
                     tools: composer:v2
             -   run: git --version
@@ -53,14 +47,12 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-            matrix:
-                php: ${{ fromJson(needs.provide_php_versions_json.outputs.matrix) }}
-        name: Static Analysis [${{ matrix.php }}]
+        name: Static Analysis [7.4]
         steps:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: 7.4
                     coverage: none
                     tools: composer:v2
             -   run: git --version
