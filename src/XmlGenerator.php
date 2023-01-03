@@ -178,9 +178,8 @@ EOT;
         $xml = '';
 
         foreach ($this->sheetCollection->collection() as $sheet) {
-            $debtor = $sheet->debtor();
-            foreach ($debtor->tariffGrouping()->grouping() as $tariffCollection) {
-                $xml .= $this->sheet($sheet, $debtor, $tariffCollection);
+            foreach ($sheet->tariffGrouping()->grouping() as $tariffCollection) {
+                $xml .= $this->sheet($sheet, $sheet->debtor(), $tariffCollection);
             }
         }
 

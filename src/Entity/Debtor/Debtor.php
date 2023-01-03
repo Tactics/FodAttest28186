@@ -26,8 +26,6 @@ final class Debtor
 
     private Child $child;
 
-    private TariffGrouping $tariffGrouping;
-
     private ?CompanyNumber $companyNumber = null;
 
     private ?NationalRegistryNumber $nationalRegistryNumber = null;
@@ -38,10 +36,9 @@ final class Debtor
      * @param Address $address
      * @param DateTimeImmutable $birthDate
      * @param string $birthPlace
-     * @param TariffGrouping $tariffGrouping
      * @param Child $child
      */
-    public function __construct(string $name, string $firstName, Address $address, DateTimeImmutable $birthDate, string $birthPlace, Child $child, TariffGrouping $tariffGrouping)
+    public function __construct(string $name, string $firstName, Address $address, DateTimeImmutable $birthDate, string $birthPlace, Child $child)
     {
         $this->name = $name;
         $this->firstName = $firstName;
@@ -49,7 +46,6 @@ final class Debtor
         $this->birthDate = $birthDate;
         $this->birthPlace = $birthPlace;
         $this->child = $child;
-        $this->tariffGrouping = $tariffGrouping;
     }
 
     public function withCompanyNumber(CompanyNumber $companyNumber): Debtor
@@ -111,14 +107,6 @@ final class Debtor
     public function child(): Child
     {
         return $this->child;
-    }
-
-    /**
-     * @return TariffGrouping
-     */
-    public function tariffGrouping(): TariffGrouping
-    {
-        return $this->tariffGrouping;
     }
 
     public function companyNumber(): ?string

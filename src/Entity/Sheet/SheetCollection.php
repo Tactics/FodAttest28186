@@ -1,6 +1,6 @@
 <?php
 
-class SheetCollection
+final class SheetCollection
 {
     private array $collection;
 
