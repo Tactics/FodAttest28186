@@ -1,8 +1,8 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\InvoiceAgency;
+namespace Tactics\FodAttest28186\Modal\InvoiceAgency;
 
-use Tactics\FodAttest28186\Entity\Certifier\Certifier;
+use Tactics\FodAttest28186\Modal\Certifier\Certifier;
 use Tactics\FodAttest28186\ValueObject\Address;
 
 interface InvoiceAgency
@@ -12,8 +12,6 @@ interface InvoiceAgency
     public function address(): Address;
 
     public function identifier(): string;
-
-    public function withCertifier(Certifier $certifier): self;
 
     public function certifier(): ?Certifier;
 }

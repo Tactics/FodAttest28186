@@ -1,8 +1,8 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\InvoiceAgency;
+namespace Tactics\FodAttest28186\Modal\InvoiceAgency;
 
-use Tactics\FodAttest28186\Entity\Certifier\Certifier;
+use Tactics\FodAttest28186\Modal\Certifier\Certifier;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 
@@ -25,11 +25,20 @@ final class Person implements InvoiceAgency
      * @param Address $address
      * @param NationalRegistryNumber $nationalRegistryNumber
      */
-    public function __construct(string $name, Address $address, NationalRegistryNumber $nationalRegistryNumber)
+    private function __construct(string $name, Address $address, NationalRegistryNumber $nationalRegistryNumber)
     {
         $this->name = $name;
         $this->address = $address;
         $this->nationalRegistryNumber = $nationalRegistryNumber;
+    }
+
+    public static function create(
+        string $name,
+        Address $address,
+        NationalRegistryNumber $nationalRegistryNumber
+    ) : Person
+    {
+        return new self($name, $address, $nationalRegistryNumber);
     }
 
     public function withCertifier(Certifier $certifier): Person

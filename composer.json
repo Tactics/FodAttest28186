@@ -3,7 +3,9 @@
     "description": "This is a package for generating the XML needed for Tax Certificate 281.86",
     "require": {
         "php": ">=7.4",
-        "setbased/rijksregisternummer": "^1.2"
+        "setbased/rijksregisternummer": "^1.2",
+        "beberlei/assert": "^3.3",
+        "nesbot/carbon": "^2.64"
     },
     "autoload": {
         "psr-4": {

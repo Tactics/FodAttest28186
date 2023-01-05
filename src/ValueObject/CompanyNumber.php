@@ -13,7 +13,7 @@ final class CompanyNumber
     /**
      * @param string $companyNumber
      */
-    public function __construct(string $companyNumber)
+    private function __construct(string $companyNumber)
     {
         // Get first character from $number
         $firstChar = $companyNumber[0];
@@ -29,6 +29,11 @@ final class CompanyNumber
         }
 
         $this->companyNumber = $clean;
+    }
+
+    public static function fromString(string $companyNumber): CompanyNumber
+    {
+        return new self($companyNumber);
     }
 
     /**

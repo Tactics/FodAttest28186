@@ -1,6 +1,6 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\Tariff;
+namespace Tactics\FodAttest28186\Modal\Tariff;
 
 use InvalidArgumentException;
 

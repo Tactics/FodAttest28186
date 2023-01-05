@@ -1,11 +1,11 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\InvoiceAgency;
+namespace Tactics\FodAttest28186\Modal\InvoiceAgency;
 
 use InvalidArgumentException;
-use Tactics\FodAttest28186\Entity\Sender\Company as SenderCompany;
-use Tactics\FodAttest28186\Entity\Sender\Person as SenderPerson;
-use Tactics\FodAttest28186\Entity\Sender\Sender;
+use Tactics\FodAttest28186\Modal\Sender\Company as SenderCompany;
+use Tactics\FodAttest28186\Modal\Sender\Person as SenderPerson;
+use Tactics\FodAttest28186\Modal\Sender\Sender;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 
@@ -19,15 +19,15 @@ final class InvoiceAgencyFactory
     {
         switch ($sender) {
             case $sender instanceof SenderCompany:
-                $companyNumber = new CompanyNumber($sender->identifier());
-                return new Company(
+                $companyNumber = CompanyNumber::fromString($sender->identifier());
+                return Company::create(
                     $sender->name(),
                     $sender->address(),
                     $companyNumber,
                 );
             case $sender instanceof SenderPerson:
-                $nationalRegistryNumber = new NationalRegistryNumber($sender->identifier());
-                return new Person(
+                $nationalRegistryNumber = NationalRegistryNumber::fromString($sender->identifier());
+                return Person::create(
                     $sender->name(),
                     $sender->address(),
                     $nationalRegistryNumber

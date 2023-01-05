@@ -1,6 +1,6 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\Certifier;
+namespace Tactics\FodAttest28186\Modal\Certifier;
 
 use Tactics\FodAttest28186\Enum\FodCertificationCode;
 use Tactics\FodAttest28186\ValueObject\Address;
@@ -26,7 +26,12 @@ final class Certifier
      * @param Address $address
      * @param FodCertificationCode $certificationCode
      */
-    public function __construct(string $name, CompanyNumber $companyNumber, Address $address, FodCertificationCode $certificationCode)
+    private function __construct(
+        string $name,
+        CompanyNumber $companyNumber,
+        Address $address,
+        FodCertificationCode $certificationCode
+    )
     {
         $this->name = $name;
         $this->companyNumber = $companyNumber;
@@ -34,22 +39,14 @@ final class Certifier
         $this->certificationCode = $certificationCode;
     }
 
-    /**
-     * Helper function to easily create a Certifier for Opgroeien Regie (aka. Kind en gezin)
-     * This is useful when this package is used in applications pertaining daycare.
-     *
-     * @return Certifier
-     */
-    public static function createForOpgroeienRegie(): Certifier
+    public static function create(
+        string $name,
+        CompanyNumber $companyNumber,
+        Address $address,
+        FodCertificationCode $certificationCode
+    ): Certifier
     {
-        $address = Address::forBelgium('Hallepoortlaan 27', '1060', 'Sint-Gillis');
-        $companyNumber = new CompanyNumber('0886886638');
-        return new self(
-            'Opgroeien regie',
-            $companyNumber,
-            $address,
-            FodCertificationCode::from(FodCertificationCode::OPGROEIEN_REGIE)
-        );
+        return new self($name, $companyNumber, $address, $certificationCode);
     }
 
     /**
@@ -73,5 +70,23 @@ final class Certifier
     public function certificationCode(): FodCertificationCode
     {
         return $this->certificationCode;
+    }
+
+    /**
+     * Helper function to easily create a Certifier for Opgroeien Regie (aka. Kind en gezin)
+     * This is useful when this package is used in applications pertaining daycare.
+     *
+     * @return Certifier
+     */
+    public static function createForOpgroeienRegie(): Certifier
+    {
+        $address = Address::forBelgium('Hallepoortlaan 27', '1060', 'Sint-Gillis');
+        $companyNumber = CompanyNumber::fromString('0886886638');
+        return new self(
+            'Opgroeien regie',
+            $companyNumber,
+            $address,
+            FodCertificationCode::from(FodCertificationCode::OPGROEIEN_REGIE)
+        );
     }
 }

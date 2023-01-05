@@ -1,6 +1,6 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\Sender;
+namespace Tactics\FodAttest28186\Modal\Sender;
 
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\ValueObject\Address;

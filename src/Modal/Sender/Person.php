@@ -1,6 +1,6 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\Sender;
+namespace Tactics\FodAttest28186\Modal\Sender;
 
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\ValueObject\Address;
@@ -40,6 +40,18 @@ final class Person implements Sender
         $this->email = $email;
         $this->nationalRegistryNumber = $nationalRegistryNumber;
         $this->languageCode = $languageCode;
+    }
+
+    public static function create(
+        string $name,
+        Address $address,
+        string $phoneNumber,
+        string $email,
+        NationalRegistryNumber $nationalRegistryNumber,
+        FodLanguageCode $languageCode
+    ) : Person
+    {
+        return new self($name, $address, $phoneNumber, $email, $nationalRegistryNumber, $languageCode);
     }
 
     public function name(): string

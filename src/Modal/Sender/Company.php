@@ -1,6 +1,6 @@
 <?php
 
-namespace Tactics\FodAttest28186\Entity\Sender;
+namespace Tactics\FodAttest28186\Modal\Sender;
 
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\ValueObject\Address;
@@ -32,7 +32,7 @@ final class Company implements Sender
      * @param CompanyNumber $companyNumber
      * @param SenderContact $senderContact
      */
-    public function __construct(string $name, Address $address, string $phoneNumber, string $email, CompanyNumber $companyNumber, SenderContact $senderContact)
+    private function __construct(string $name, Address $address, string $phoneNumber, string $email, CompanyNumber $companyNumber, SenderContact $senderContact)
     {
         $this->name = $name;
         $this->address = $address;
@@ -40,6 +40,18 @@ final class Company implements Sender
         $this->email = $email;
         $this->companyNumber = $companyNumber;
         $this->senderContact = $senderContact;
+    }
+
+    public static function create(
+        string $name,
+        Address $address,
+        string $phoneNumber,
+        string $email,
+        CompanyNumber $companyNumber,
+        SenderContact $senderContact
+    ) : Company
+    {
+        return new self($name, $address, $phoneNumber, $email, $companyNumber, $senderContact);
     }
 
     public function name(): string

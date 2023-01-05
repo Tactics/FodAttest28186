@@ -2,20 +2,20 @@
 
 namespace Tactics\FodAttest28186;
 
-use Sheet;
-use SheetCollection;
-use Tactics\FodAttest28186\Entity\Certifier\Certifier;
-use Tactics\FodAttest28186\Entity\Child\Child;
-use Tactics\FodAttest28186\Entity\Child\ChildWithNationalRegistry;
-use Tactics\FodAttest28186\Entity\Child\ChildWithoutNationalRegistry;
-use Tactics\FodAttest28186\Entity\Debtor\Debtor;
-use Tactics\FodAttest28186\Entity\InvoiceAgency\InvoiceAgency;
-use Tactics\FodAttest28186\Entity\Sender\Company;
-use Tactics\FodAttest28186\Entity\Sender\Person;
-use Tactics\FodAttest28186\Entity\Sender\Sender;
-use Tactics\FodAttest28186\Entity\Tariff\Tariff;
-use Tactics\FodAttest28186\Entity\Tariff\TariffCollection;
-use Tactics\FodAttest28186\Entity\Tariff\TariffXmlMapper;
+use Tactics\FodAttest28186\Modal\Certifier\Certifier;
+use Tactics\FodAttest28186\Modal\Child\Child;
+use Tactics\FodAttest28186\Modal\Child\ChildWithNationalRegistry;
+use Tactics\FodAttest28186\Modal\Child\ChildWithoutNationalRegistry;
+use Tactics\FodAttest28186\Modal\Debtor\Debtor;
+use Tactics\FodAttest28186\Modal\InvoiceAgency\InvoiceAgency;
+use Tactics\FodAttest28186\Modal\Sender\Company;
+use Tactics\FodAttest28186\Modal\Sender\Person;
+use Tactics\FodAttest28186\Modal\Sender\Sender;
+use Tactics\FodAttest28186\Modal\Tariff\Tariff;
+use Tactics\FodAttest28186\Modal\Tariff\TariffCollection;
+use Tactics\FodAttest28186\Modal\Tariff\TariffXmlMapper;
+use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheet;
+use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheetMap;
 use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\Enum\FodFileType;
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
@@ -29,7 +29,7 @@ final class XmlGenerator
 
     private const FIRSTNAME_MAX_LENGTH = 30;
 
-    private string $year;
+    private int $year;
 
     private FodFileType $fileType;
 
@@ -39,21 +39,28 @@ final class XmlGenerator
 
     private InvoiceAgency $invoiceAgency;
 
-    private SheetCollection $sheetCollection;
+    private TaxSheetMap $sheetCollection;
 
     private int $sheetCounter = 0;
 
     private int $totalAmount = 0;
 
     /**
-     * @param string $year
+     * @param int $year
      * @param FodFileType $fileType
      * @param Sender $sender
      * @param FodSendCode $sendCode
      * @param InvoiceAgency $invoiceAgency
-     * @param \SheetCollection $sheetCollection
+     * @param TaxSheetMap $sheetCollection
      */
-    public function __construct(string $year, FodFileType $fileType, Sender $sender, FodSendCode $sendCode, InvoiceAgency $invoiceAgency, SheetCollection $sheetCollection)
+    public function __construct(
+        int $year,
+        FodFileType $fileType,
+        Sender $sender,
+        FodSendCode $sendCode,
+        InvoiceAgency $invoiceAgency,
+        TaxSheetMap $sheetCollection
+    )
     {
         $this->year = $year;
         $this->fileType = $fileType;
@@ -177,30 +184,32 @@ EOT;
     {
         $xml = '';
 
-        foreach ($this->sheetCollection->collection() as $sheet) {
-            foreach ($sheet->tariffGrouping()->grouping() as $tariffCollection) {
-                $xml .= $this->sheet($sheet, $sheet->debtor(), $tariffCollection);
+        foreach ($this->sheetCollection->getIterator() as $sheet) {
+            foreach ($sheet->tariffGroups() as $group) {
+                foreach ($group->getIterator() as $collection) {
+                    $xml .= $this->sheet($sheet, $collection);
+                }
             }
         }
 
         return $xml;
     }
 
-    private function sheet(Sheet $sheet, Debtor $debtor, TariffCollection $tariffCollection): string
+    private function sheet(TaxSheet $sheet, TariffCollection $tariffCollection): string
     {
         $this->sheetCounter++;
 
         $xml = $this->sheetInfo($sheet);
-        $xml .= $this->debtor($debtor);
+        $xml .= $this->debtor($sheet->debtor());
 
         $certifier = $this->invoiceAgency->certifier();
         if ($certifier instanceof Certifier) {
             $xml .= $this->certifier($certifier);
         }
 
-        $xml .= $this->child($debtor->child());
+        $xml .= $this->child($sheet->child());
 
-        foreach ($tariffCollection->collection() as $index => $tariff) {
+        foreach ($tariffCollection as $index => $tariff) {
             $xml .= $this->tariff($index + 1, $tariff);
         }
 
@@ -213,14 +222,14 @@ EOT;
         return $xml;
     }
 
-    private function sheetInfo(Sheet $sheet): string
+    private function sheetInfo(TaxSheet $sheet): string
     {
         return <<<EOT
     <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
     <f2008_typefiche>28186</f2008_typefiche>
     <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
-    <f2010_referentie>{$sheet->externalIdentifier()}</f2010_referentie>
-    <f2028_typetraitement>{$sheet->sheetType()->value()}</f2028_typetraitement>
+    <f2010_referentie>{$sheet->uuid()->toString()}</f2010_referentie>
+    <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
     <f2029_enkelopgave325>0</f2029_enkelopgave325>
 EOT;
     }
@@ -234,33 +243,56 @@ EOT;
      */
     private function debtor(Debtor $debtor): string
     {
+
         $debtorCompanyNumber = $debtor->companyNumber() ?? '0';
-        $name = $this->escapeInvalidXmlChars($this->formatMaxLength($debtor->name(), self::NAME_MAX_LENGTH));
-        $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($debtor->firstName(), self::FIRSTNAME_MAX_LENGTH));
-        $address = $debtor->address();
-        $addressLine = $this->escapeInvalidXmlChars(
-            $this->formatMaxLength(
-                $address->addressLine(),
-                $this->addressMaxLength()
-            )
-        );
-        $postal = $address->postal();
-        $countryCode = $debtor->address()->countryCode()->value();
+        $rrn = $debtor->nationalRegistryNumber()->value();
 
         $xml = <<<EOT
     <f2005_registratienummer>$debtorCompanyNumber</f2005_registratienummer>
-    <f2011_nationaalnr>{$debtor->nationalRegistryNumber()}</f2011_nationaalnr>
+    <f2011_nationaalnr>$rrn</f2011_nationaalnr>
+EOT;
+
+        // Due to a bug/inconsistency in the tool we always need to provide the postal code.
+        // We don't want to make this required on the debtor since this is a mistake.
+        // So we extract it first here or fallback to a default.
+        $country = $debtor->details() ?
+            $debtor->details()->address()->countryCode() :
+            FodCountryCode::from(FodCountryCode::BELGIUM);
+
+        $xml .= <<<EOT
+        <f2018_landwoonplaats>{$country->value()}</f2018_landwoonplaats>
+EOT;
+
+        $debtorDetails = $debtor->details();
+        if ($debtorDetails) {
+            $name = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->familyName(), self::NAME_MAX_LENGTH));
+            $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->givenName(), self::FIRSTNAME_MAX_LENGTH));
+            $address = $debtorDetails->address();
+            $addressLine = $this->escapeInvalidXmlChars(
+                $this->formatMaxLength(
+                    $address->addressLine(),
+                    $this->addressMaxLength()
+                )
+            );
+
+            $xml .= <<<EOT
     <f2013_naam>$name</f2013_naam>
     <f2015_adres>$addressLine</f2015_adres>
     <f2017_gemeente>{$address->city()}</f2017_gemeente>
-    <f2018_landwoonplaats>$countryCode</f2018_landwoonplaats>
     <f2114_voornamen>$firstName</f2114_voornamen>
 EOT;
+        }
 
-        if ($countryCode === FodCountryCode::BELGIUM) {
-            $xml .= "<f2016_postcodebelgisch>$postal</f2016_postcodebelgisch>";
-        } else {
-            $xml .= "<f2112_buitenlandspostnummer>$postal</f2112_buitenlandspostnummer>";
+        $postal = $debtor->details() ?
+            $debtor->details()->address()->postal() :
+            null;
+
+        if ($postal) {
+            if ($country->value() === FodCountryCode::BELGIUM) {
+                $xml .= "<f2016_postcodebelgisch>$postal</f2016_postcodebelgisch>";
+            } else {
+                $xml .= "<f2112_buitenlandspostnummer>$postal</f2112_buitenlandspostnummer>";
+            }
         }
 
         return $xml;
@@ -293,18 +325,18 @@ EOT;
         $xml = '';
 
         if ($child instanceof ChildWithoutNationalRegistry) {
-            $childData = $child->childData();
+            $childDetails = $child->details();
 
-            $name = $this->escapeInvalidXmlChars($this->formatMaxLength($childData->name(), self::NAME_MAX_LENGTH));
-            $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($childData->firstName(), self::FIRSTNAME_MAX_LENGTH));
-            $address = $childData->address();
+            $name = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->familyName(), self::NAME_MAX_LENGTH));
+            $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->givenName(), self::FIRSTNAME_MAX_LENGTH));
+            $address = $childDetails->address();
             $addressLine = $this->escapeInvalidXmlChars(
                 $this->formatMaxLength(
                     $address->addressLine(),
                     $this->addressMaxLength()
                 )
             );
-            $formattedBirthDate = $childData->birthDate()->format(self::DATE_FORMAT);
+            $formattedDayOfBirth = $childDetails->dayOfBirth()->toDateTime()->format(self::DATE_FORMAT);
 
             $xml = <<<EOT
     <f86_2101_childcountry>{$address->countryCode()->value()}</f86_2101_childcountry>
@@ -313,7 +345,7 @@ EOT;
     <f86_2107_childfirstname>$firstName</f86_2107_childfirstname>
     <f86_2139_childpostnr>{$address->postal()}</f86_2139_childpostnr>
     <f86_2140_childmunicipality>{$address->city()}</f86_2140_childmunicipality>
-    <f86_2163_childbirthdate>$formattedBirthDate</f86_2163_childbirthdate>
+    <f86_2163_childbirthdate>$formattedDayOfBirth</f86_2163_childbirthdate>
 EOT;
         }
 

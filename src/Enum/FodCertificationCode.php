@@ -11,9 +11,10 @@ final class FodCertificationCode extends Enum
     public const NOT_APPLICABLE = 0;
 
     /**
-     * Code to be used when daycare is certified by Opgroeien Regie
-     * That they are allowed, recognized, subsidized, controlled or supervised, or have received a quality label from
-     * "l'Office de la Naissance et de l'Enfance" or "Kind & Gezin" / "Opgroeien regie" or from the German-speaking Community
+     * Code to be used when daycare is certified by Opgroeien Regie.
+     * That they are allowed, recognized, subsidized, controlled or supervised, or have received
+     * a quality label from "l'Office de la Naissance et de l'Enfance" or "Kind & Gezin" / "Opgroeien regie"
+     * or from the German-speaking Community
      */
     public const OPGROEIEN_REGIE = 1;
 

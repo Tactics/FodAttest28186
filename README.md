@@ -30,3 +30,10 @@ Code should always be documented as to what they mean in function of the tax cer
 
 When this package requires a new dependency make sure to install it through the docker container.
 That way we can make sure the dependency is never out of sync with the php/composer version
+
+## Change Log
+
+Documented change log for each version of the package.
+
+#### 1.0.0
+Initial release
