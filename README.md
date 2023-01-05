@@ -1,7 +1,30 @@
 # FOD Attest 281.86
+[![Software License][ico-license]](LICENSE.md)
 
-## Background information
+Package to standardize the creation of tax certificates 281.86 for costs of childcare
+in a structured way and export it to XMl for digital submission.
 
+## Install
+
+Make sure to add this to the *"repositories"* key in your ```composer.json```
+since this is a private package hosted on our own Composer repository generator Satis.
+
+```composer
+"repositories": [
+    {
+        "type": "composer",
+        "url": "https://satis.tactics.be"
+    }
+]
+````
+
+Then run the following command
+
+``` bash
+$ composer require tactics/fod-attest-28186
+```
+
+## Context
 Starting from 2023 onward the tax certificate 281.86 (Costs of childcare) must be delivered digitally to the government.
 This will be done through Belcotax On Web.
 
@@ -31,6 +54,30 @@ Code should always be documented as to what they mean in function of the tax cer
 When this package requires a new dependency make sure to install it through the docker container.
 That way we can make sure the dependency is never out of sync with the php/composer version
 
+## Change log
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Testing
+
+``` bash
+$ composer test
+```
+
+## Static analysis
+
+``` bash
+$ composer phpstan
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
+
+## Security
+
+If you discover any security related issues, please email info at tactics dot be instead of using the issue tracker.
+
 ## Credits
 
 - [Jan Dries][link-author]
@@ -47,5 +94,6 @@ The Lesser GPL version 3 or later. Please see [License File](LICENSE.md) for mor
 [link-author]: https://github.com/TacticsJan
 [link-coauthor]: https://github.com/gertvdb
 [link-owner]: https://github.com/Tactics
-
 [link-contributors]: ../../contributors
+
+[ico-license]: https://img.shields.io/badge/License-LGPLv3-green.svg?style=flat-square

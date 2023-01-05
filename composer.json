@@ -26,7 +26,7 @@
         "ecs": [
             "./vendor/bin/ecs check --config ecs.php"
         ],
-        "phpunit": [
+        "test": [
             "./vendor/bin/phpunit"
         ],
         "phpstan": [
