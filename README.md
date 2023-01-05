@@ -2,11 +2,11 @@
 
 ## Background information
 
-Starting from 2023 onward the tax certificate 281.86 (Costs of childcare) must be delivered to the government.
-This will be done through Belcotax On Web
+Starting from 2023 onward the tax certificate 281.86 (Costs of childcare) must be delivered digitally to the government.
+This will be done through Belcotax On Web.
 
 [All technical documentation](https://financien.belgium.be/nl/E-services/Belcotaxonweb/technische-documentatie) can be found here.
-Every following link is also found on the website
+Every following link is also found on the website.
 
 Every year specs get updated and this package must be updated accordingly.
 This is the [brochure](https://financien.belgium.be/sites/default/files/downloads/161-belcotax-brochure-2022-20221209-nl.pdf) with all changes and explanation of fields/validation of fields.
@@ -20,7 +20,7 @@ There also is an [FAQ](https://financien.belgium.be/sites/default/files/download
 
 This package is written in **PHP7.4** because it will also be used by applications that lag behind on PHP versions.
 In an ideal world we write this packaged in the latest PHP version and have rector make a build to an older PHP version.
-This package would be the ideal
+This package would be the ideal test case for such a setup.
 
 ## Code Documentation
 
