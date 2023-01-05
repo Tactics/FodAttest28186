@@ -1,8 +1,7 @@
 # FOD Attest 281.86
 [![Software License][ico-license]](LICENSE.md)
-[![Owner][https://user-images.githubusercontent.com/7106435/210873669-540d2ee5-a8d2-4170-a44e-227138dac3be.png]]([link-owner])
+[![Owner](https://user-images.githubusercontent.com/7106435/210873669-540d2ee5-a8d2-4170-a44e-227138dac3be.png)]([link-owner])
 
-<img width="94" alt="Badge-Tactics" src="https://user-images.githubusercontent.com/7106435/210873669-540d2ee5-a8d2-4170-a44e-227138dac3be.png">
 
 Package to standardize the creation of tax certificates 281.86 for costs of childcare
 in a structured way and export it to XML for digital submission.
@@ -100,5 +99,4 @@ The Lesser GPL version 3 or later. Please see [License File](LICENSE.md) for mor
 [link-contributors]: ../../contributors
 
 [ico-license]: https://img.shields.io/badge/License-LGPLv3-green.svg?style=flat-square
-[ico-owner]: https://user-images.githubusercontent.com/7106435/210872683-5f1868ff-41a9-412e-8289-628790c31fae.png
 
