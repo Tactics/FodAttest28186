@@ -1,3 +1,4 @@
+#file: noinspection SpellCheckingInspection
 name: CodeChecks
 
 on:
@@ -8,57 +9,34 @@ on:
             - main
 
 jobs:
-    provide_php_versions_json:
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v2
-
-            -   uses: shivammathur/setup-php@v2
-                with:
-                    # this is the only place we have to use PHP to avoid the lock to bash scripting
-                    php-version: 7.4
-
-            -   run: composer clearcache
-            -   run: composer install --no-progress --ansi
-
     test:
-        needs: provide_php_versions_json
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-        name: Tests [7.4]
+        name: Tests
         steps:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 7.4
+                    php-version: [7.4, 8.0, 8.1]
                     coverage: none
                     tools: composer:v2
-            -   run: git --version
-            -   run: git config --global user.email "test@github.com"
-            -   run: git config --global user.name "GitHub Action"
-            -   run: git --version
             -   run: composer clearcache
             -   run: composer install --no-progress --ansi
             -   run: composer phpunit
 
     static_analysis:
-        needs: provide_php_versions_json
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
-        name: Static Analysis [7.4]
+        name: Static Analysis
         steps:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 7.4
+                    php-version: [7.4, 8.0, 8.1]
                     coverage: none
                     tools: composer:v2
-            -   run: git --version
-            -   run: git config --global user.email "test@github.com"
-            -   run: git config --global user.name "GitHub Action"
-            -   run: git --version
             -   run: composer clearcache
             -   run: composer install --no-progress --ansi
             -   run: composer phpstan-cli
