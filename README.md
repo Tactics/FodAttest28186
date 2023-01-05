@@ -11,7 +11,7 @@ in a structured way and export it to XML for digital submission.
 Make sure to add this to the *"repositories"* key in your ```composer.json```
 since this is a private package hosted on our own Composer repository generator Satis.
 
-```composer
+```bash
 "repositories": [
     {
         "type": "composer",
