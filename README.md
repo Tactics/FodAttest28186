@@ -2,7 +2,7 @@
 [![Software License][ico-license]](LICENSE.md)
 
 Package to standardize the creation of tax certificates 281.86 for costs of childcare
-in a structured way and export it to XMl for digital submission.
+in a structured way and export it to XML for digital submission.
 
 ## Install
 
