@@ -31,9 +31,21 @@ Code should always be documented as to what they mean in function of the tax cer
 When this package requires a new dependency make sure to install it through the docker container.
 That way we can make sure the dependency is never out of sync with the php/composer version
 
-## Change Log
+## Credits
 
-Documented change log for each version of the package.
+- [Jan Dries][link-author]
+- [Gert van den Buijs][link-coauthor]
+- [All Contributors][link-contributors]
 
-#### 1.0.0
-Initial release
+Development of this library is sponsored by [Tactics]([link-owner]).
+
+## License
+
+The Lesser GPL version 3 or later. Please see [License File](LICENSE.md) for more information.
+
+[link-satis]: https://satis.tactics.be/#tactics/fod-attest-28186
+[link-author]: https://github.com/TacticsJan
+[link-coauthor]: https://github.com/gertvdb
+[link-owner]: https://github.com/Tactics
+
+[link-contributors]: ../../contributors
