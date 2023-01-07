@@ -76,7 +76,7 @@ $ composer phpstan
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
 
-## Security [![Known Vulnerabilities](https://snyk.io/test/github/dwyl/hapi-auth-jwt2/badge.svg?targetFile=composer.json)](https://snyk.io/test/github/dwyl/hapi-auth-jwt2?targetFile=composer.json)
+## Security
 
 If you discover any security related issues, please email info at tactics dot be instead of using the issue tracker.
 
