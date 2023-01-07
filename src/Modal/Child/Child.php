@@ -20,5 +20,5 @@ interface Child
 
     public function toUniqueIdentifiable(): string;
 
-    public function dayOfBirth() : DayOfBirth;
+    public function dayOfBirth(): DayOfBirth;
 }

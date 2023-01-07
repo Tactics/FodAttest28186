@@ -37,9 +37,8 @@ final class Company implements InvoiceAgency
         string $name,
         Address $address,
         CompanyNumber $companyNumber
-    ) : Company
-    {
-       return new self($name, $address, $companyNumber);
+    ): Company {
+        return new self($name, $address, $companyNumber);
     }
 
     public function withCertifier(Certifier $certifier): Company

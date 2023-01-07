@@ -6,21 +6,23 @@ use Generator;
 
 final class TaxSheetMap
 {
-
     /**
      * @var TaxSheet[]
      */
     private array $sheets;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
-    public static function create() : TaxSheetMap {
+    public static function create(): TaxSheetMap
+    {
         return new self();
     }
 
     public function add(TaxSheet $sheet): TaxSheetMap
     {
-        $new = clone($this);
+        $new = clone ($this);
         $sheets = [...$this->sheets, [$sheet->uuid()->toString() => $sheet]];
         $new->sheets = $sheets;
         return $new;
@@ -28,15 +30,15 @@ final class TaxSheetMap
 
     public function lookUp(
         TaxSheetUuid $uuid
-    ) : ?TaxSheet {
-        return $this->sheets[$uuid->toString()] ?? NULL;
+    ): ?TaxSheet {
+        return $this->sheets[$uuid->toString()] ?? null;
     }
 
     public function replace(
         TaxSheetUuid $uuid,
         TaxSheet $sheet
-    ) : TaxSheetMap {
-        $new = clone($this);
+    ): TaxSheetMap {
+        $new = clone ($this);
 
         $sheets = $this->sheets;
         $sheets[$uuid->toString()] = $sheet;
@@ -47,7 +49,7 @@ final class TaxSheetMap
     /**
      * @return Generator
      */
-    public function getIterator() : Generator
+    public function getIterator(): Generator
     {
         foreach ($this->sheets as $fiche) {
             yield $fiche;

@@ -49,8 +49,7 @@ final class Person implements Sender
         string $email,
         NationalRegistryNumber $nationalRegistryNumber,
         FodLanguageCode $languageCode
-    ) : Person
-    {
+    ): Person {
         return new self($name, $address, $phoneNumber, $email, $nationalRegistryNumber, $languageCode);
     }
 

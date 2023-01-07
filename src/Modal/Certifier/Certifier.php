@@ -31,8 +31,7 @@ final class Certifier
         CompanyNumber $companyNumber,
         Address $address,
         FodCertificationCode $certificationCode
-    )
-    {
+    ) {
         $this->name = $name;
         $this->companyNumber = $companyNumber;
         $this->address = $address;
@@ -44,8 +43,7 @@ final class Certifier
         CompanyNumber $companyNumber,
         Address $address,
         FodCertificationCode $certificationCode
-    ): Certifier
-    {
+    ): Certifier {
         return new self($name, $companyNumber, $address, $certificationCode);
     }
 

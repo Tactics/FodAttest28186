@@ -29,8 +29,7 @@ final class ChildDetails
         string $givenName,
         Address $address,
         DayOfBirth $dayOfBirth
-    )
-    {
+    ) {
         $this->familyName = $familyName;
         $this->givenName = $givenName;
         $this->address = $address;
@@ -42,8 +41,7 @@ final class ChildDetails
         string $givenName,
         Address $address,
         DayOfBirth $dayOfBirth
-    ): ChildDetails
-    {
+    ): ChildDetails {
         return new self($familyName, $givenName, $address, $dayOfBirth);
     }
 

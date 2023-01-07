@@ -9,7 +9,6 @@ use TypeError;
 
 final class DayOfBirth
 {
-
     private Carbon $dayOfBirth;
 
     private function __construct(Carbon $dayOfBirth)
@@ -22,17 +21,13 @@ final class DayOfBirth
 
     public static function fromDateTime(DateTimeInterface $dayOfBirth): DayOfBirth
     {
-       $toCarbon = (new Carbon($dayOfBirth))->startOfDay();
-       return new self($toCarbon);
-    }
-
-    public function toDateTime() : DateTimeImmutable {
-        return $this->dayOfBirth->toDateTimeImmutable();
+        $toCarbon = (new Carbon($dayOfBirth));
+        return new self($toCarbon);
     }
 
     public function whenAge(int $age): DayOfBirth
     {
-        $new = clone($this);
+        $new = clone ($this);
         $new->dayOfBirth = $this->dayOfBirth->addYears($age);
         return $new;
     }
@@ -43,4 +38,8 @@ final class DayOfBirth
         return $this->dayOfBirth->startOfDay()->isBefore($toCarbon);
     }
 
+    public function format(): string
+    {
+        return $this->dayOfBirth->format('d-m-Y');
+    }
 }

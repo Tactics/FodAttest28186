@@ -2,7 +2,6 @@
 
 namespace Tactics\FodAttest28186\Modal\Child;
 
-use DateTimeImmutable;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
@@ -31,16 +30,16 @@ final class ChildWithoutNationalRegistry implements Child
         string $familyName,
         string $givenName,
         Address $address,
-        DateTimeImmutable $birthDate
-    ): ChildWithoutNationalRegistry
-    {
+        DayOfBirth $birthDate
+    ): ChildWithoutNationalRegistry {
         $childData = ChildDetails::create($familyName, $givenName, $address, $birthDate);
         return new self($childData);
     }
 
-    public function withSevereDisability(): ChildWithoutNationalRegistry {
-        $new = clone($this);
-        $new->severelyDisabled = TRUE;
+    public function withSevereDisability(): ChildWithoutNationalRegistry
+    {
+        $new = clone ($this);
+        $new->severelyDisabled = true;
         return $new;
     }
 
@@ -54,7 +53,8 @@ final class ChildWithoutNationalRegistry implements Child
         return $this->details;
     }
 
-    public function toUniqueIdentifiable() : string {
+    public function toUniqueIdentifiable(): string
+    {
         $props = [
             $this->details()->givenName(),
             $this->details()->familyName(),
@@ -62,12 +62,13 @@ final class ChildWithoutNationalRegistry implements Child
             $this->details()->address()->city(),
             $this->details()->address()->postal(),
             $this->details()->address()->countryCode(),
-            $this->details()->dayOfBirth()->format('Y-m-d')
+            $this->details()->dayOfBirth()->format()
         ];
         return md5(serialize($props));
     }
 
-    public function equals(Child $child): bool {
+    public function equals(Child $child): bool
+    {
         return $this->toUniqueIdentifiable() === $child->toUniqueIdentifiable();
     }
 

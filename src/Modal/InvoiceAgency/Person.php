@@ -36,8 +36,7 @@ final class Person implements InvoiceAgency
         string $name,
         Address $address,
         NationalRegistryNumber $nationalRegistryNumber
-    ) : Person
-    {
+    ): Person {
         return new self($name, $address, $nationalRegistryNumber);
     }
 

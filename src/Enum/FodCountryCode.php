@@ -17,6 +17,9 @@ final class FodCountryCode extends Enum
 
     public const GERMANY = 103;
 
+    public const USA = 332;
+
+
     public static function fromIsoCode(string $isoCode): FodCountryCode
     {
         switch (strtolower($isoCode)) {
@@ -26,6 +29,8 @@ final class FodCountryCode extends Enum
                 return self::from(self::NETHERLANDS);
             case 'de':
                 return self::from(self::GERMANY);
+            case 'us':
+                return self::from(self::USA);
             default:
                 throw new InvalidArgumentException(sprintf('iso code %s not supported', $isoCode));
         }

@@ -2,7 +2,6 @@
 
 namespace Tactics\FodAttest28186\Modal\Child;
 
-use DateTimeImmutable;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
@@ -22,21 +21,20 @@ final class ChildWithNationalRegistry implements Child
      */
     private function __construct(
         NationalRegistryNumber $nationalRegistryNumber
-    )
-    {
+    ) {
         $this->nationalRegistryNumber = $nationalRegistryNumber;
     }
 
     public static function create(
         NationalRegistryNumber $nationalRegistryNumber
-    ): self
-    {
+    ): self {
         return new self($nationalRegistryNumber);
     }
 
-    public function withSevereDisability(): ChildWithNationalRegistry {
-        $new = clone($this);
-        $new->severelyDisabled = TRUE;
+    public function withSevereDisability(): ChildWithNationalRegistry
+    {
+        $new = clone ($this);
+        $new->severelyDisabled = true;
         return $new;
     }
 
@@ -44,9 +42,8 @@ final class ChildWithNationalRegistry implements Child
         string $familyName,
         string $givenName,
         Address $address
-    ): ChildWithNationalRegistry
-    {
-        $new = clone($this);
+    ): ChildWithNationalRegistry {
+        $new = clone ($this);
         $details = ChildDetails::create(
             $familyName,
             $givenName,
@@ -67,7 +64,8 @@ final class ChildWithNationalRegistry implements Child
         return $this->details;
     }
 
-    public function equals(Child $child): bool {
+    public function equals(Child $child): bool
+    {
         return $this->toUniqueIdentifiable() === $child->toUniqueIdentifiable();
     }
 
@@ -85,4 +83,5 @@ final class ChildWithNationalRegistry implements Child
     {
         return $this->nationalRegistryNumber->dayOfBirth();
     }
+
 }

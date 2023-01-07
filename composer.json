@@ -12,6 +12,11 @@
             "Tactics\\FodAttest28186\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require-dev": {
         "symplify/easy-coding-standard": "^11.1",
         "roave/security-advisories": "dev-latest",
@@ -20,14 +25,14 @@
         "symplify/easy-ci": "^11.1"
     },
     "scripts": {
-        "ecs-fix": [
+        "fix-style": [
             "./vendor/bin/ecs check --config ecs.php --fix"
         ],
-        "ecs": [
+        "check-style": [
             "./vendor/bin/ecs check --config ecs.php"
         ],
         "test": [
-            "./vendor/bin/phpunit"
+            "./vendor/bin/phpunit --testdox"
         ],
         "phpstan": [
             "./vendor/bin/phpstan analyse --memory-limit=-1 --ansi"

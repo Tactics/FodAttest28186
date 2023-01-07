@@ -2,6 +2,7 @@
 
 namespace Tactics\FodAttest28186\Modal\Tariff;
 
+use DateTimeImmutable;
 use RuntimeException;
 use Tactics\FodAttest28186\Modal\Child\Child;
 use Tactics\FodAttest28186\Modal\Debtor\Debtor;
@@ -31,8 +32,7 @@ final class Tariff
         TariffPeriod $period,
         Debtor $debtor,
         Child $child
-    )
-    {
+    ) {
         $maxAge = $child->isSeverelyDisabled() ? 21 : 14;
         $maxBirthday = $child->dayOfBirth()->whenAge($maxAge);
         if ($maxBirthday->isBefore($period->begin())) {
@@ -53,7 +53,8 @@ final class Tariff
             );
 
             $begin = $period->begin();
-            $period = TariffPeriod::create($begin, $maxBirthday->toDateTime()->modify('- 1 day'));
+            $end = DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day');
+            $period = TariffPeriod::create($begin, $end);
         }
 
         $this->days = $days;
@@ -69,8 +70,7 @@ final class Tariff
         TariffPeriod $period,
         Debtor $debtor,
         Child $child
-    ): Tariff
-    {
+    ): Tariff {
         return new self($days, $tariff, $period, $debtor, $child);
     }
 
@@ -98,19 +98,23 @@ final class Tariff
         return $this->period;
     }
 
-    public function debtor() : Debtor {
+    public function debtor(): Debtor
+    {
         return $this->debtor;
     }
 
-    public function child() : Child {
+    public function child(): Child
+    {
         return $this->child;
     }
 
-    public function hasWarnings(): bool {
+    public function hasWarnings(): bool
+    {
         return count($this->warnings) > 0;
     }
 
-    public function warnings(): array {
+    public function warnings(): array
+    {
         return $this->warnings;
     }
 }

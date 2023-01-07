@@ -23,7 +23,8 @@ final class NationalRegistryNumber
         $this->nationalRegistryNumber = $clean;
     }
 
-    public static function fromString(string $nationalRegistryNumber) :  NationalRegistryNumber {
+    public static function fromString(string $nationalRegistryNumber): NationalRegistryNumber
+    {
         return new self($nationalRegistryNumber);
     }
 

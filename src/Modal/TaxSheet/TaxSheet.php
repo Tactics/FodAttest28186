@@ -3,12 +3,12 @@
 namespace Tactics\FodAttest28186\Modal\TaxSheet;
 
 use Generator;
+use Tactics\FodAttest28186\Enum\FodSheetType;
 use Tactics\FodAttest28186\Modal\Child\Child;
 use Tactics\FodAttest28186\Modal\Debtor\Debtor;
 use Tactics\FodAttest28186\Modal\Tariff\Tariff;
 use Tactics\FodAttest28186\Modal\Tariff\TariffCollection;
 use Tactics\FodAttest28186\Modal\Tariff\TariffGrouping;
-use Tactics\FodAttest28186\Enum\FodSheetType;
 use TypeError;
 
 final class TaxSheet
@@ -26,8 +26,7 @@ final class TaxSheet
         FodSheetType $type,
         Debtor $debtor,
         Child $child
-    )
-    {
+    ) {
         $this->uuid = $uuid;
         $this->type = $type;
         $this->debtor = $debtor;
@@ -40,8 +39,7 @@ final class TaxSheet
         FodSheetType $type,
         Debtor $debtor,
         Child $child
-    ): TaxSheet
-    {
+    ): TaxSheet {
         return new self($uuid, $type, $debtor, $child);
     }
 
@@ -55,28 +53,32 @@ final class TaxSheet
             throw new TypeError('invalid child');
         }
 
-        $new = clone($this);
+        $new = clone ($this);
         $tariffs = [...$this->tariffs, $tariff];
         $new->tariffs = $tariffs;
         return $new;
     }
 
-    public function of(Debtor $debtor, Child $child) : bool {
+    public function of(Debtor $debtor, Child $child): bool
+    {
         return $this->child->equals($child) && $this->debtor->equals($debtor);
     }
 
-    public function uuid() : TaxSheetUuid {
+    public function uuid(): TaxSheetUuid
+    {
         return $this->uuid;
     }
 
-    public function type() : FodSheetType {
+    public function type(): FodSheetType
+    {
         return $this->type;
     }
 
     /**
      * @return Generator<TariffGrouping>
      */
-    public function tariffGroups() : Generator {
+    public function tariffGroups(): Generator
+    {
         $collections = TariffGrouping::create();
         $chunks = array_chunk($this->tariffs, 4);
 
@@ -91,11 +93,13 @@ final class TaxSheet
         yield from $collections;
     }
 
-    public function debtor() : Debtor {
+    public function debtor(): Debtor
+    {
         return $this->debtor;
     }
 
-    public function child() : Child {
+    public function child(): Child
+    {
         return $this->child;
     }
 }

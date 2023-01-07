@@ -7,14 +7,13 @@ use Assert\AssertionFailedException;
 
 final class TaxSheetUuid
 {
-
     private string $uuid;
 
     /**
      * @throws AssertionFailedException
      */
     private function __construct(
-       string $uuid
+        string $uuid
     ) {
         Assertion::uuid($uuid);
         $this->uuid = $uuid;
@@ -32,5 +31,4 @@ final class TaxSheetUuid
     {
         return $this->uuid;
     }
-
 }

@@ -49,8 +49,7 @@ final class Company implements Sender
         string $email,
         CompanyNumber $companyNumber,
         SenderContact $senderContact
-    ) : Company
-    {
+    ): Company {
         return new self($name, $address, $phoneNumber, $email, $companyNumber, $senderContact);
     }
 

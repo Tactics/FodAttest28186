@@ -8,7 +8,8 @@ final class TariffCollection
 {
     private array $values;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->values = [];
     }
 
@@ -23,7 +24,7 @@ final class TariffCollection
             throw new TypeError('Tariff collection can only consist of 4 items');
         }
 
-        $new = clone($this);
+        $new = clone ($this);
         $values = [...$this->values, $tariff];
         $new->values = $values;
 
@@ -52,5 +53,4 @@ final class TariffCollection
         }
         return $sum;
     }
-
 }

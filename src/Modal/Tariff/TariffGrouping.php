@@ -24,7 +24,7 @@ final class TariffGrouping implements IteratorAggregate
 
     public function add(TariffCollection $tariffCollection): TariffGrouping
     {
-        $new = clone($this);
+        $new = clone ($this);
         $grouping = [...$this->grouping, $tariffCollection];
         $new->grouping = $grouping;
         return $new;
@@ -33,7 +33,7 @@ final class TariffGrouping implements IteratorAggregate
     /**
      * @return Generator<TariffCollection>
      */
-    public function getIterator() : Generator
+    public function getIterator(): Generator
     {
         foreach ($this->grouping as $group) {
             yield $group;

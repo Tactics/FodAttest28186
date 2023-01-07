@@ -2,6 +2,10 @@
 
 namespace Tactics\FodAttest28186;
 
+use Tactics\FodAttest28186\Enum\FodCountryCode;
+use Tactics\FodAttest28186\Enum\FodFileType;
+use Tactics\FodAttest28186\Enum\FodLanguageCode;
+use Tactics\FodAttest28186\Enum\FodSendCode;
 use Tactics\FodAttest28186\Modal\Certifier\Certifier;
 use Tactics\FodAttest28186\Modal\Child\Child;
 use Tactics\FodAttest28186\Modal\Child\ChildWithNationalRegistry;
@@ -16,10 +20,6 @@ use Tactics\FodAttest28186\Modal\Tariff\TariffCollection;
 use Tactics\FodAttest28186\Modal\Tariff\TariffXmlMapper;
 use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheet;
 use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheetMap;
-use Tactics\FodAttest28186\Enum\FodCountryCode;
-use Tactics\FodAttest28186\Enum\FodFileType;
-use Tactics\FodAttest28186\Enum\FodLanguageCode;
-use Tactics\FodAttest28186\Enum\FodSendCode;
 
 final class XmlGenerator
 {
@@ -60,8 +60,7 @@ final class XmlGenerator
         FodSendCode $sendCode,
         InvoiceAgency $invoiceAgency,
         TaxSheetMap $sheetCollection
-    )
-    {
+    ) {
         $this->year = $year;
         $this->fileType = $fileType;
         $this->sender = $sender;
@@ -243,7 +242,6 @@ EOT;
      */
     private function debtor(Debtor $debtor): string
     {
-
         $debtorCompanyNumber = $debtor->companyNumber() ?? '0';
         $rrn = $debtor->nationalRegistryNumber()->value();
 
@@ -336,7 +334,7 @@ EOT;
                     $this->addressMaxLength()
                 )
             );
-            $formattedDayOfBirth = $childDetails->dayOfBirth()->toDateTime()->format(self::DATE_FORMAT);
+            $formattedDayOfBirth = $childDetails->dayOfBirth()->format(self::DATE_FORMAT);
 
             $xml = <<<EOT
     <f86_2101_childcountry>{$address->countryCode()->value()}</f86_2101_childcountry>

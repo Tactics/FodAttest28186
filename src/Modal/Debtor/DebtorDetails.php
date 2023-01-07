@@ -2,7 +2,6 @@
 
 namespace Tactics\FodAttest28186\Modal\Debtor;
 
-use DateTimeImmutable;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
@@ -34,8 +33,7 @@ final class DebtorDetails
         Address $address,
         DayOfBirth $dayOfBirth,
         string $placeOfBirth
-    )
-    {
+    ) {
         $this->familyName = $familyName;
         $this->givenName = $givenName;
         $this->address = $address;
@@ -49,7 +47,7 @@ final class DebtorDetails
         Address $address,
         DayOfBirth $dayOfBirth,
         string $placeOfBirth
-    ) : DebtorDetails {
+    ): DebtorDetails {
         return new self(
             $familyName,
             $givenName,

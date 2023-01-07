@@ -2,9 +2,6 @@
 
 namespace Tactics\FodAttest28186\Modal\Debtor;
 
-use DateTimeImmutable;
-use Tactics\FodAttest28186\Modal\Child\ChildDetails;
-use Tactics\FodAttest28186\Modal\Child\ChildWithNationalRegistry;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
@@ -14,7 +11,6 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class Debtor
 {
-
     private ?DebtorDetails $details = null;
 
     private ?CompanyNumber $companyNumber = null;
@@ -26,15 +22,13 @@ final class Debtor
      */
     private function __construct(
         NationalRegistryNumber $nationalRegistryNumber
-    )
-    {
+    ) {
         $this->nationalRegistryNumber = $nationalRegistryNumber;
     }
 
     public static function create(
         NationalRegistryNumber $nationalRegistryNumber
-    ): self
-    {
+    ): self {
         return new self($nationalRegistryNumber);
     }
 
@@ -43,9 +37,8 @@ final class Debtor
         string $givenName,
         Address $address,
         string $placeOfBirth
-    ): Debtor
-    {
-        $new = clone($this);
+    ): Debtor {
+        $new = clone ($this);
         $details = DebtorDetails::create(
             $familyName,
             $givenName,
@@ -75,7 +68,8 @@ final class Debtor
         return $this->companyNumber ? $this->companyNumber->value() : null;
     }
 
-    public function equals(Debtor $debtor): bool {
+    public function equals(Debtor $debtor): bool
+    {
         return $this->nationalRegistryNumber->value() === $debtor->nationalRegistryNumber->value();
     }
 
@@ -83,5 +77,4 @@ final class Debtor
     {
         return $this->details;
     }
-
 }
