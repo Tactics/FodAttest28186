@@ -1,5 +1,6 @@
 # FOD Attest 281.86
 [![Software License][ico-license]](LICENSE.md)
+![example workflow](https://github.com/Tactics/FodAttest28186/actions/workflows/code_checks/badge.svg)
 <a href="https://www.tactics.be"><img width="94" alt="Badge-Tactics" src="https://user-images.githubusercontent.com/7106435/210878187-36157b2b-654d-459e-9f20-6d6146cd774f.png"></a>
 
 
