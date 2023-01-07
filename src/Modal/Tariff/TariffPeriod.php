@@ -4,6 +4,7 @@ namespace Tactics\FodAttest28186\Modal\Tariff;
 
 use DateTimeImmutable;
 use InvalidArgumentException;
+use TypeError;
 
 final class TariffPeriod
 {
@@ -18,7 +19,11 @@ final class TariffPeriod
     private function __construct(DateTimeImmutable $begin, DateTimeImmutable $end)
     {
         if ($begin > $end) {
-            throw new InvalidArgumentException('Begin can not be before end of tariff');
+            throw new TypeError('Begin can not be before end of tariff');
+        }
+
+        if ($begin->format('Y') !== $end->format('Y')) {
+            throw new TypeError('Begin and end of tariff need to be in the same year');
         }
 
         $this->begin = $begin;

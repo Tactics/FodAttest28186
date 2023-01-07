@@ -1,72 +1,31 @@
 <?php
 
-namespace Unit\Modal\Tariff;
+namespace Tests\Unit\Modal\Tariff;
 
 use DateTimeImmutable;
-use Kinderopvang\Core\Validation\Child\ChildCodeValidator;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Tactics\FodAttest28186\Enum\FodCountryCode;
-use Tactics\FodAttest28186\Modal\Child\ChildDetails;
-use Tactics\FodAttest28186\Modal\Child\ChildWithNationalRegistry;
-use Tactics\FodAttest28186\Modal\Child\ChildWithoutNationalRegistry;
-use Tactics\FodAttest28186\Modal\Debtor\Debtor;
 use Tactics\FodAttest28186\Modal\Tariff\Tariff;
 use Tactics\FodAttest28186\Modal\Tariff\TariffPeriod;
-use Tactics\FodAttest28186\ValueObject\Address;
-use Tactics\FodAttest28186\ValueObject\DayOfBirth;
-use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
+use Tests\Unit\Factory\ChildFactory;
+use Tests\Unit\Factory\DayOfBirthFactory;
+use Tests\Unit\Factory\DebtorFactory;
 use TypeError;
 
 final class TariffTest extends TestCase
 {
-    private function createDayOfBirth(string $date): DayOfBirth
-    {
-        $date = DateTimeImmutable::createFromFormat('Y-m-d', $date);
-        return DayOfBirth::fromDateTime($date);
-    }
 
-    private function createAddress(): Address
-    {
-        return Address::forForeign(
-            'Sesame Street 123',
-            '10123',
-            'Manhattan',
-            FodCountryCode::from(FodCountryCode::USA)
-        );
-    }
 
-    private function createDebtor(): Debtor
+    public function setUp(): void
     {
-        $rrn = NationalRegistryNumber::fromString('65.03.06-006.36');
-        return Debtor::create(
-            $rrn
-        );
-    }
+        parent::setUp();
 
-    private function createChild(DayOfBirth $dayOfBirth): ChildWithoutNationalRegistry
-    {
-        return ChildWithoutNationalRegistry::create(
-            'Doe',
-            'Jane',
-            $this->createAddress(),
-            $dayOfBirth
-        );
-    }
-
-    private function createSeverelyDisabledChild(DayOfBirth $dayOfBirth): ChildWithoutNationalRegistry
-    {
-        return ChildWithoutNationalRegistry::create(
-            'Doe',
-            'John',
-            $this->createAddress(),
-            $dayOfBirth
-        )->withSevereDisability();
+        $this->debtorFactory = new DebtorFactory();
+        $this->childFactory = new ChildFactory();
+        $this->dayOfBirthFactory = new DayOfBirthFactory();
     }
 
     public function ageRulesProvider() : iterable
     {
-
         yield [
             'age' => '21',
             'disabled' => TRUE,
@@ -98,7 +57,7 @@ final class TariffTest extends TestCase
 
     /**
      * @dataProvider ageRulesProvider
-     * @testdox $testcase.
+     * @testdox Test $testcase.
      */
     public function testAgeBasedBlockingValidation(
         string $age,
@@ -108,16 +67,14 @@ final class TariffTest extends TestCase
     {
         $this->expectException(TypeError::class);
 
-        $dayOfBirth = $this->createDayOfBirth('1986-04-25');
-        $child = $disabled ?
-            $this->createSeverelyDisabledChild($dayOfBirth) :
-            $this->createChild($dayOfBirth);
+        $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
+        $child =  $this->childFactory->create($disabled, $dayOfBirth);
 
         $birthdayOnAge = $dayOfBirth->whenAge($age);
         $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
 
         $period = TariffPeriod::create($dayAfterBirthdayOnAge, $dayAfterBirthdayOnAge->modify('+1 month'));
-        $debtor = $this->createDebtor();
+        $debtor = $this->debtorFactory->create();
 
         Tariff::create(
             10,
@@ -130,7 +87,7 @@ final class TariffTest extends TestCase
 
     /**
      * @dataProvider ageWarningProvider
-     * @testdox $testcase.
+     * @testdox Test $testcase.
      */
     public function testAgeBasedWarnings(
         string $age,
@@ -138,23 +95,18 @@ final class TariffTest extends TestCase
         string $testcase
     ): void
     {
-        $dayOfBirth = $this->createDayOfBirth('1986-04-25');
-        $child = $disabled ?
-            $this->createSeverelyDisabledChild($dayOfBirth) :
-            $this->createChild($dayOfBirth);
+        $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
+        $child = $this->childFactory->create($disabled, $dayOfBirth);
 
         $birthdayOnAge = $dayOfBirth->whenAge($age);
         $monthBeforeBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('-1 month');
         $monthAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 month');
 
-        $period = TariffPeriod::create($monthBeforeBirthdayOnAge, $monthAfterBirthdayOnAge);
-        $debtor = $this->createDebtor();
-
         $tariff = Tariff::create(
             10,
             100,
-            $period,
-            $debtor,
+            TariffPeriod::create($monthBeforeBirthdayOnAge, $monthAfterBirthdayOnAge),
+            $this->debtorFactory->create(),
             $child
         );
 

@@ -14,6 +14,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Tactics\\FodAttest28186\\": "src/",
             "Tests\\": "tests/"
         }
     },
