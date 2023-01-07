@@ -7,7 +7,9 @@ use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
 final class DayOfBirthFactory
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function create(string $date): DayOfBirth
     {
@@ -15,4 +17,3 @@ final class DayOfBirthFactory
         return DayOfBirth::fromDateTime($date);
     }
 }
-

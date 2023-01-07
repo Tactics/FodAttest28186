@@ -15,7 +15,6 @@ use TypeError;
 
 final class TariffCollectionTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -23,7 +22,6 @@ final class TariffCollectionTest extends TestCase
         $this->debtorFactory = new DebtorFactory();
         $this->childFactory = new ChildFactory();
         $this->dayOfBirthFactory = new DayOfBirthFactory();
-
     }
 
     public function testATariffCollectionCanOnlyContain4Items(): void
@@ -34,7 +32,7 @@ final class TariffCollectionTest extends TestCase
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
         $debtor = $this->debtorFactory->create();
         $dayOfBirth = $this->dayOfBirthFactory->create('2021-04-25');
-        $child =  $this->childFactory->create(FALSE, $dayOfBirth);
+        $child = $this->childFactory->create(false, $dayOfBirth);
 
         $tariff = Tariff::create(
             10,
@@ -45,7 +43,7 @@ final class TariffCollectionTest extends TestCase
         );
 
         $collection = TariffCollection::create();
-        foreach([$tariff,$tariff,$tariff,$tariff,$tariff] as $item) {
+        foreach ([$tariff, $tariff, $tariff, $tariff, $tariff] as $item) {
             $collection = $collection->add($item);
         }
     }
@@ -56,7 +54,7 @@ final class TariffCollectionTest extends TestCase
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
         $debtor = $this->debtorFactory->create();
         $dayOfBirth = $this->dayOfBirthFactory->create('2018-04-25');
-        $child =  $this->childFactory->create(FALSE, $dayOfBirth);
+        $child = $this->childFactory->create(false, $dayOfBirth);
 
         $tariff1 = Tariff::create(
             10,
@@ -75,11 +73,10 @@ final class TariffCollectionTest extends TestCase
         );
 
         $collection = TariffCollection::create();
-        foreach([$tariff1,$tariff2] as $item) {
+        foreach ([$tariff1, $tariff2] as $item) {
             $collection = $collection->add($item);
         }
 
         $this->assertEquals(400, $collection->sum());
     }
-
 }

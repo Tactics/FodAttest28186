@@ -83,5 +83,4 @@ final class ChildWithNationalRegistry implements Child
     {
         return $this->nationalRegistryNumber->dayOfBirth();
     }
-
 }

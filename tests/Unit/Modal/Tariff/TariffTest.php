@@ -13,8 +13,6 @@ use TypeError;
 
 final class TariffTest extends TestCase
 {
-
-
     public function setUp(): void
     {
         parent::setUp();
@@ -24,33 +22,32 @@ final class TariffTest extends TestCase
         $this->dayOfBirthFactory = new DayOfBirthFactory();
     }
 
-    public function ageRulesProvider() : iterable
+    public function ageRulesProvider(): iterable
     {
         yield [
             'age' => '21',
-            'disabled' => TRUE,
+            'disabled' => true,
             'testcase' => 'a tariff can not be created for severely disabled children after the age of 21',
         ];
 
         yield [
             'age' => '14',
-            'disabled' => FALSE,
+            'disabled' => false,
             'testcase' => 'a tariff can not be created for children after the age of 14',
         ];
     }
 
-    public function ageWarningProvider() : iterable
+    public function ageWarningProvider(): iterable
     {
-
         yield [
             'age' => '21',
-            'disabled' => TRUE,
+            'disabled' => true,
             'testcase' => 'a tariff created for a severely disabled child that ends on a day after the child turned 21, corrects the end date to 1 day before he/she turns 21 and adds a warning to the tariff',
         ];
 
         yield [
             'age' => '14',
-            'disabled' => FALSE,
+            'disabled' => false,
             'testcase' => 'a tariff created for a child that ends on a day after the child turned 14, corrects the end date to 1 day before he/she turns 14 and adds a warning to the tariff',
         ];
     }
@@ -63,12 +60,11 @@ final class TariffTest extends TestCase
         string $age,
         bool $disabled,
         string $testcase
-    ): void
-    {
+    ): void {
         $this->expectException(TypeError::class);
 
         $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
-        $child =  $this->childFactory->create($disabled, $dayOfBirth);
+        $child = $this->childFactory->create($disabled, $dayOfBirth);
 
         $birthdayOnAge = $dayOfBirth->whenAge($age);
         $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
@@ -93,8 +89,7 @@ final class TariffTest extends TestCase
         string $age,
         bool $disabled,
         string $testcase
-    ): void
-    {
+    ): void {
         $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
         $child = $this->childFactory->create($disabled, $dayOfBirth);
 
@@ -114,5 +109,4 @@ final class TariffTest extends TestCase
         $this->assertCount(1, $tariff->warnings());
         $this->assertEquals($birthdayOnAge->format(), $tariff->period()->end()->modify('+1 day')->format('d-m-Y'));
     }
-
 }

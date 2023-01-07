@@ -9,7 +9,6 @@ use TypeError;
 
 final class TariffPeriodTest extends TestCase
 {
-
     /**
      * @dataProvider periodeProvider
      * @testdox Test $testcase by testcase $start until $end.
@@ -18,8 +17,7 @@ final class TariffPeriodTest extends TestCase
         string $start,
         string $end,
         string $testcase
-    ): void
-    {
+    ): void {
         $this->expectException(TypeError::class);
 
         $startDateTime = DateTimeImmutable::createFromFormat('d-m-Y', $start);
@@ -31,7 +29,7 @@ final class TariffPeriodTest extends TestCase
         );
     }
 
-    public function periodeProvider() : iterable
+    public function periodeProvider(): iterable
     {
         yield [
             'start' => '12-03-2021',
@@ -45,5 +43,4 @@ final class TariffPeriodTest extends TestCase
             'testcase' => 'the start and end date of a periode need to be in the same year',
         ];
     }
-
 }

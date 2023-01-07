@@ -7,7 +7,9 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 
 final class DebtorFactory
 {
-    public function __construct(){}
+    public function __construct()
+    {
+    }
 
     public function create(): Debtor
     {
@@ -17,4 +19,3 @@ final class DebtorFactory
         );
     }
 }
-

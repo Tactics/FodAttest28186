@@ -9,7 +9,9 @@ use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
 final class ChildFactory
 {
-    public function __construct(){}
+    public function __construct()
+    {
+    }
 
     public function create(bool $disable, DayOfBirth $dayOfBirth): ChildWithoutNationalRegistry
     {
@@ -33,5 +35,4 @@ final class ChildFactory
 
         return $child;
     }
-
 }
