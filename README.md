@@ -1,8 +1,7 @@
 # FOD Attest 281.86
 [![Software License][ico-license]](LICENSE.md)
 <a href="https://www.tactics.be"><img width="94" alt="Badge-Tactics" src="https://user-images.githubusercontent.com/7106435/210878187-36157b2b-654d-459e-9f20-6d6146cd774f.png"></a>
-
-
+[![Build][ico-build]](https://github.com/Tactics/FodAttest28186/actions)
 
 Package to standardize the creation of tax certificates 281.86 for costs of childcare
 in a structured way and export it to XML for digital submission.
@@ -61,7 +60,7 @@ That way we can make sure the dependency is never out of sync with the php/compo
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Testing [![Build][ico-build]](https://github.com/Tactics/FodAttest28186/actions)
+## Testing 
 
 ``` bash
 $ composer test
