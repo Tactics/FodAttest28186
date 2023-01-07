@@ -3,8 +3,6 @@
 namespace Tests\Unit\Modal\Tariff;
 
 use DateTimeImmutable;
-use InvalidArgumentException;
-use Kinderopvang\Core\Validation\Child\ChildCodeValidator;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Modal\Tariff\TariffPeriod;
 use TypeError;
