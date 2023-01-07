@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use RuntimeException;
 use Tactics\FodAttest28186\Modal\Child\Child;
 use Tactics\FodAttest28186\Modal\Debtor\Debtor;
+use TypeError;
 
 final class Tariff
 {
@@ -35,8 +36,8 @@ final class Tariff
     ) {
         $maxAge = $child->isSeverelyDisabled() ? 21 : 14;
         $maxBirthday = $child->dayOfBirth()->whenAge($maxAge);
-        if ($maxBirthday->isBefore($period->begin())) {
-            throw new RuntimeException(
+        if ($maxBirthday->isBeforeOrEqual($period->begin())) {
+            throw new TypeError(
                 sprintf(
                     'Tariff not allowed, child is %s at before start date of the tariff period %s',
                     $maxAge,
@@ -45,15 +46,18 @@ final class Tariff
             );
         }
 
-        if ($maxBirthday->isBefore($period->end())) {
+        if ($maxBirthday->isBeforeOrEqual($period->end())) {
+            $begin = $period->begin();
+            $end = DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day');
+
             $this->warnings[] = sprintf(
-                'Tariff end date %s is invalid, since the child turned %s before this date.',
+                'Tariff end date %s is invalid, since the child turned %s before this date. The date got corrected to %s (on day before he turns %s)',
                 $period->end()->format('Y-m-d'),
+                $maxAge,
+                $end->format('Y-m-d'),
                 $maxAge
             );
 
-            $begin = $period->begin();
-            $end = DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day');
             $period = TariffPeriod::create($begin, $end);
         }
 

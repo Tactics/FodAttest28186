@@ -16,7 +16,7 @@ final class ChildWithoutNationalRegistry implements Child
     /**
      * @var true
      */
-    private bool $severelyDisabled;
+    private bool $severelyDisabled = false;
 
     /**
      * @param ChildDetails $details

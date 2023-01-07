@@ -34,6 +34,9 @@
         "test": [
             "./vendor/bin/phpunit --testdox"
         ],
+        "test-debug": [
+            "./vendor/bin/phpunit --testdox --debug"
+        ],
         "phpstan": [
             "./vendor/bin/phpstan analyse --memory-limit=-1 --ansi"
         ],

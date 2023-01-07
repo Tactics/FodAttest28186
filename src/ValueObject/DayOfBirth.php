@@ -28,7 +28,8 @@ final class DayOfBirth
     public function whenAge(int $age): DayOfBirth
     {
         $new = clone ($this);
-        $new->dayOfBirth = $this->dayOfBirth->addYears($age);
+        $dayOfBirth = clone ($this->dayOfBirth);
+        $new->dayOfBirth = $dayOfBirth->addYears($age);
         return $new;
     }
 
@@ -36,6 +37,13 @@ final class DayOfBirth
     {
         $toCarbon = (new Carbon($dateTime))->startOfDay();
         return $this->dayOfBirth->startOfDay()->isBefore($toCarbon);
+    }
+
+    public function isBeforeOrEqual(DateTimeInterface $dateTime): bool
+    {
+        $toCarbon = (new Carbon($dateTime))->startOfDay();
+        return $this->dayOfBirth->startOfDay()->isBefore($toCarbon) ||
+            $this->dayOfBirth->startOfDay()->isSameDay($toCarbon);
     }
 
     public function format(): string
