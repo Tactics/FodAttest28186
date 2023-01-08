@@ -3,6 +3,7 @@
 namespace Tactics\FodAttest28186\ValueObject;
 
 use InvalidArgumentException;
+use TypeError;
 
 final class CompanyNumber
 {
@@ -20,14 +21,18 @@ final class CompanyNumber
 
         //Check if the Company number starts with either 0 or 1.
         if (!in_array((int) $firstChar, self::VALID_FIRST_CHAR, true)) {
-            throw new InvalidArgumentException('Invalid company number passed: Must start with 0 or 1');
+            throw new TypeError('Invalid company number passed: Must start with 0 or 1');
         }
 
         $clean = str_replace('.', '', $companyNumber);
-        if (strlen($clean) !== 10) {
-            throw new InvalidArgumentException('Invalid company number passed: Must contain 10 digits');
+        if (!is_numeric($clean)) {
+            throw new TypeError('Invalid company number passed: Must contain only digits');
         }
 
+        if (strlen($clean) !== 10) {
+            throw new TypeError('Invalid company number passed: Must contain 10 digits');
+        }
+        
         $this->companyNumber = $clean;
     }
 

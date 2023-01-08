@@ -5,7 +5,6 @@ namespace Tests\Unit\ValueObject;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\ValueObject\Address;
-use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 use TypeError;
 
 final class AddressTest extends TestCase
