@@ -70,7 +70,8 @@ final class TariffTest extends TestCase
         $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
 
         $period = TariffPeriod::create($dayAfterBirthdayOnAge, $dayAfterBirthdayOnAge->modify('+1 month'));
-        $debtor = $this->debtorFactory->create();
+        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        );
 
         Tariff::create(
             10,
@@ -101,7 +102,8 @@ final class TariffTest extends TestCase
             10,
             100,
             TariffPeriod::create($monthBeforeBirthdayOnAge, $monthAfterBirthdayOnAge),
-            $this->debtorFactory->create(),
+            $this->debtorFactory->create(        '65.03.06-006.36'
+            ),
             $child
         );
 

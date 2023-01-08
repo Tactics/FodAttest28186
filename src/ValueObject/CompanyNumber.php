@@ -32,7 +32,7 @@ final class CompanyNumber
         if (strlen($clean) !== 10) {
             throw new TypeError('Invalid company number passed: Must contain 10 digits');
         }
-        
+
         $this->companyNumber = $clean;
     }
 

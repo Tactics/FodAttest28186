@@ -9,7 +9,7 @@ final class TaxSheetMap
     /**
      * @var TaxSheet[]
      */
-    private array $sheets;
+    private array $sheets = [];
 
     private function __construct()
     {
@@ -23,7 +23,8 @@ final class TaxSheetMap
     public function add(TaxSheet $sheet): TaxSheetMap
     {
         $new = clone ($this);
-        $sheets = [...$this->sheets, [$sheet->uuid()->toString() => $sheet]];
+        $sheets = $this->sheets;
+        $sheets[$sheet->uuid()->toString()] = $sheet;
         $new->sheets = $sheets;
         return $new;
     }

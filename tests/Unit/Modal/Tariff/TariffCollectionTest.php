@@ -30,7 +30,8 @@ final class TariffCollectionTest extends TestCase
 
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
-        $debtor = $this->debtorFactory->create();
+        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        );
         $dayOfBirth = $this->dayOfBirthFactory->create('2021-04-25');
         $child = $this->childFactory->create(false, $dayOfBirth);
 
@@ -52,7 +53,8 @@ final class TariffCollectionTest extends TestCase
     {
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
-        $debtor = $this->debtorFactory->create();
+        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        );
         $dayOfBirth = $this->dayOfBirthFactory->create('2018-04-25');
         $child = $this->childFactory->create(false, $dayOfBirth);
 

@@ -11,9 +11,9 @@ final class DebtorFactory
     {
     }
 
-    public function create(): Debtor
+    public function create(string $nr): Debtor
     {
-        $rrn = NationalRegistryNumber::fromString('65.03.06-006.36');
+        $rrn = NationalRegistryNumber::fromString($nr);
         return Debtor::create(
             $rrn
         );
