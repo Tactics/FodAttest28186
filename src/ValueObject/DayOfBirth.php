@@ -39,6 +39,12 @@ final class DayOfBirth
         return $this->dayOfBirth->startOfDay()->isBefore($toCarbon);
     }
 
+    public function isSameDay(DateTimeInterface $dateTime): bool
+    {
+        $toCarbon = (new Carbon($dateTime))->startOfDay();
+        return $this->dayOfBirth->startOfDay()->isSameDay($toCarbon);
+    }
+
     public function isBeforeOrEqual(DateTimeInterface $dateTime): bool
     {
         $toCarbon = (new Carbon($dateTime))->startOfDay();

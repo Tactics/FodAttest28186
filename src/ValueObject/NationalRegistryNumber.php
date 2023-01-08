@@ -5,6 +5,7 @@ namespace Tactics\FodAttest28186\ValueObject;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use SetBased\Rijksregisternummer\RijksregisternummerHelper;
+use TypeError;
 
 final class NationalRegistryNumber
 {
@@ -17,7 +18,7 @@ final class NationalRegistryNumber
     {
         $clean = RijksregisternummerHelper::clean($nationalRegistryNumber);
         if (!RijksregisternummerHelper::isValid($clean)) {
-            throw new InvalidArgumentException('Invalid argument passed for NationalRegistryNumber');
+            throw new TypeError('Invalid argument passed for NationalRegistryNumber');
         }
 
         $this->nationalRegistryNumber = $clean;
