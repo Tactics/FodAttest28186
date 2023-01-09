@@ -13,10 +13,13 @@ use TypeError;
 
 final class TariffTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+    private DebtorFactory $debtorFactory;
+    private ChildFactory $childFactory;
+    private DayOfBirthFactory $dayOfBirthFactory;
 
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
         $this->debtorFactory = new DebtorFactory();
         $this->childFactory = new ChildFactory();
         $this->dayOfBirthFactory = new DayOfBirthFactory();
@@ -70,7 +73,8 @@ final class TariffTest extends TestCase
         $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
 
         $period = TariffPeriod::create($dayAfterBirthdayOnAge, $dayAfterBirthdayOnAge->modify('+1 month'));
-        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        $debtor = $this->debtorFactory->create(
+            '65.03.06-006.36'
         );
 
         Tariff::create(
@@ -102,7 +106,8 @@ final class TariffTest extends TestCase
             10,
             100,
             TariffPeriod::create($monthBeforeBirthdayOnAge, $monthAfterBirthdayOnAge),
-            $this->debtorFactory->create(        '65.03.06-006.36'
+            $this->debtorFactory->create(
+                '65.03.06-006.36'
             ),
             $child
         );

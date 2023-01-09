@@ -9,8 +9,8 @@ use TypeError;
 
 final class CompanyNumberTest extends TestCase
 {
-
-    public function testACompanyNumberMustStartWithOneOrZero(): void {
+    public function testACompanyNumberMustStartWithOneOrZero(): void
+    {
         $companyNr1 = CompanyNumber::fromString('012.3456.743');
         $companyNr2 = CompanyNumber::fromString('112.3556.523');
 
@@ -18,19 +18,21 @@ final class CompanyNumberTest extends TestCase
         $this->assertEquals('1123556523', $companyNr2->value());
     }
 
-    public function testACompanyNumberMustContainTenNumbers(): void {
+    public function testACompanyNumberMustContainTenNumbers(): void
+    {
         $this->expectException(TypeError::class);
         CompanyNumber::fromString('012.3456.7431');
     }
 
-    public function testACompanyNumberCanContainOnlyNumbersAndDots(): void {
+    public function testACompanyNumberCanContainOnlyNumbersAndDots(): void
+    {
         $this->expectException(TypeError::class);
         CompanyNumber::fromString('012-3456-7431');
     }
 
-    public function testACompanyNumberCanNotContainLetters(): void {
+    public function testACompanyNumberCanNotContainLetters(): void
+    {
         $this->expectException(TypeError::class);
         CompanyNumber::fromString('012.A123.123');
     }
-
 }

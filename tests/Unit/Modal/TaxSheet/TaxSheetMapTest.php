@@ -15,24 +15,26 @@ use Tests\Unit\Factory\DebtorFactory;
 
 final class TaxSheetMapTest extends TestCase
 {
+    private DebtorFactory $debtorFactory;
+    private ChildFactory $childFactory;
+    private DayOfBirthFactory $dayOfBirthFactory;
 
-    public function setUp(): void
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
-        parent::setUp();
-
+        parent::__construct($name, $data, $dataName);
         $this->debtorFactory = new DebtorFactory();
         $this->childFactory = new ChildFactory();
         $this->dayOfBirthFactory = new DayOfBirthFactory();
     }
 
-    public function testTaxSheetLookup(): void {
-
+    public function testTaxSheetLookup(): void
+    {
         $map = TaxSheetMap::create();
         $type = FodSheetType::from(FodSheetType::NORMAL);
 
         $uuid1 = TaxSheetUuid::fromString('38d43870-9db2-46f7-9da0-a4f788e593fd');
         $dayOfBirth1 = $this->dayOfBirthFactory->create('1986-04-25');
-        $child1 = $this->childFactory->create(FALSE, $dayOfBirth1);
+        $child1 = $this->childFactory->create(false, $dayOfBirth1);
         $debtor1 = $this->debtorFactory->create(
             '65.03.06-006.36'
         );
@@ -40,7 +42,7 @@ final class TaxSheetMapTest extends TestCase
 
         $uuid2 = TaxSheetUuid::fromString('003b11ca-2401-4a70-a45a-9f7558232cb6');
         $dayOfBirth2 = $this->dayOfBirthFactory->create('1990-09-02');
-        $child2 = $this->childFactory->create(FALSE, $dayOfBirth2);
+        $child2 = $this->childFactory->create(false, $dayOfBirth2);
         $debtor2 = $this->debtorFactory->create(
             '75.12.01-123.51'
         );
@@ -54,14 +56,14 @@ final class TaxSheetMapTest extends TestCase
         $this->assertTrue($map->lookUp($uuid2)->debtor()->equals($debtor2));
     }
 
-    public function testTaxSheetReplace(): void {
-
+    public function testTaxSheetReplace(): void
+    {
         $map = TaxSheetMap::create();
         $type = FodSheetType::from(FodSheetType::NORMAL);
 
         $uuid1 = TaxSheetUuid::fromString('38d43870-9db2-46f7-9da0-a4f788e593fd');
         $dayOfBirth1 = $this->dayOfBirthFactory->create('1986-04-25');
-        $child1 = $this->childFactory->create(FALSE, $dayOfBirth1);
+        $child1 = $this->childFactory->create(false, $dayOfBirth1);
         $debtor1 = $this->debtorFactory->create(
             '65.03.06-006.36'
         );
@@ -69,7 +71,7 @@ final class TaxSheetMapTest extends TestCase
 
         $uuid2 = TaxSheetUuid::fromString('003b11ca-2401-4a70-a45a-9f7558232cb6');
         $dayOfBirth2 = $this->dayOfBirthFactory->create('1990-09-02');
-        $child2 = $this->childFactory->create(FALSE, $dayOfBirth2);
+        $child2 = $this->childFactory->create(false, $dayOfBirth2);
         $debtor2 = $this->debtorFactory->create(
             '75.12.01-123.51'
         );

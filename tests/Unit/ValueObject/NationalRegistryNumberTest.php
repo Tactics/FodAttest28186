@@ -11,7 +11,6 @@ use TypeError;
 
 final class NationalRegistryNumberTest extends TestCase
 {
-
     /**
      * @dataProvider dayOfBirthProvider
      * @testdox Test $testcase.
@@ -40,7 +39,8 @@ final class NationalRegistryNumberTest extends TestCase
         $test($nr->value());
     }
 
-    public function testNationalRegistryNumberCanNotBeCreatedFromInvalidString(): void {
+    public function testNationalRegistryNumberCanNotBeCreatedFromInvalidString(): void
+    {
         $this->expectException(TypeError::class);
         NationalRegistryNumber::fromString('86.04.V1-125.86');
     }

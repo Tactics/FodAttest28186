@@ -15,10 +15,13 @@ use TypeError;
 
 final class TariffCollectionTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
+    private DebtorFactory $debtorFactory;
+    private ChildFactory $childFactory;
+    private DayOfBirthFactory $dayOfBirthFactory;
 
+    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
         $this->debtorFactory = new DebtorFactory();
         $this->childFactory = new ChildFactory();
         $this->dayOfBirthFactory = new DayOfBirthFactory();
@@ -30,7 +33,8 @@ final class TariffCollectionTest extends TestCase
 
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
-        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        $debtor = $this->debtorFactory->create(
+            '65.03.06-006.36'
         );
         $dayOfBirth = $this->dayOfBirthFactory->create('2021-04-25');
         $child = $this->childFactory->create(false, $dayOfBirth);
@@ -53,7 +57,8 @@ final class TariffCollectionTest extends TestCase
     {
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
-        $debtor = $this->debtorFactory->create(        '65.03.06-006.36'
+        $debtor = $this->debtorFactory->create(
+            '65.03.06-006.36'
         );
         $dayOfBirth = $this->dayOfBirthFactory->create('2018-04-25');
         $child = $this->childFactory->create(false, $dayOfBirth);

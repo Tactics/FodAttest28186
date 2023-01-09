@@ -9,25 +9,28 @@ use TypeError;
 
 final class AddressTest extends TestCase
 {
-
-    public function testCreateValidAddressInBelgium(): void {
+    public function testCreateValidAddressInBelgium(): void
+    {
         $address = Address::forBelgium('Starrenhoflaan 14', '2920', 'Kapellen');
         $this->assertEquals(FodCountryCode::BELGIUM, $address->countryCode()->value());
         $this->assertEquals('2920', $address->postal());
     }
 
-    public function testAddressInBelgiumValidatesPostalCode(): void {
+    public function testAddressInBelgiumValidatesPostalCode(): void
+    {
         $this->expectException(TypeError::class);
         Address::forBelgium('Starrenhoflaan 14', '10900', 'Kapellen');
     }
 
-    public function testCreateValidForeignAddress(): void {
+    public function testCreateValidForeignAddress(): void
+    {
         $address = Address::forForeign('Time Square', '10036', 'New York', FodCountryCode::fromIsoCode('us'));
         $this->assertEquals(FodCountryCode::USA, $address->countryCode()->value());
         $this->assertEquals('10036', $address->postal());
     }
 
-    public function testCreateInvalidForeignAddress(): void {
+    public function testCreateInvalidForeignAddress(): void
+    {
         $this->expectException(TypeError::class);
         Address::forForeign('Time Square', '1234567891123', 'New York', FodCountryCode::fromIsoCode('us'));
     }
