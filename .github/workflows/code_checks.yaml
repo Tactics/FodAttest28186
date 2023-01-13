@@ -40,3 +40,9 @@ jobs:
             -   run: composer clearcache
             -   run: composer install --no-progress --ansi
             -   run: composer phpstan-cli
+
+            -   uses: timkrase/phpunit-coverage-badge@v1.2.0
+                with:
+                    coverage_badge_path: 'badge-coverage.svg'
+                    push_badge: true
+                    repo_token: ${{ secrets.GITHUB_TOKEN }}

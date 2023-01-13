@@ -1,5 +1,6 @@
 # FOD Attest 281.86
 [![Build][ico-build]](https://github.com/Tactics/FodAttest28186/actions)
+[![Test Coverage](https://github.com/Tactics/FodAttest28186/blob/main/badge-coverage.svg)](https://satis.tactics.be/#tactics/fodattest28186)
 
 Package to standardize the creation of tax certificates 281.86 for costs of childcare
 in a structured way and export it to XML for digital submission.
@@ -58,7 +59,7 @@ That way we can make sure the dependency is never out of sync with the php/compo
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Testing 
+## Testing
 
 ``` bash
 $ composer test

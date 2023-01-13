@@ -33,7 +33,7 @@
             "./vendor/bin/ecs check --config ecs.php"
         ],
         "test": [
-            "./vendor/bin/phpunit --testdox"
+            "./vendor/bin/phpunit --testdox --coverage-clover clover.xml"
         ],
         "test-debug": [
             "./vendor/bin/phpunit --testdox --debug"

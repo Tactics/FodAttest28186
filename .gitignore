@@ -3,3 +3,4 @@ vendor/
 .ecs_cache/
 .idea/
 .cache
+.phpunit.cache
