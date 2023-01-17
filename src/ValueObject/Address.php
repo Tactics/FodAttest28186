@@ -2,9 +2,9 @@
 
 namespace Tactics\FodAttest28186\ValueObject;
 
-use InvalidArgumentException;
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Tactics\FodAttest28186\Enum\FodCountryCode;
-use TypeError;
 
 /**
  *
@@ -27,21 +27,23 @@ final class Address
         $this->countryCode = $countryCode;
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function forBelgium(string $addressLine, string $postal, string $city): Address
     {
-        if (!is_numeric($postal) || !(1000 <= (int)$postal && $postal <= 9999)) {
-            throw new TypeError('Invalid postal code given');
-        }
-
+        Assertion::numeric($postal, 'A Belgium postal must be numeric');
+        Assertion::greaterOrEqualThan($postal, 1000, 'A valid Belgium postal cant be less than 1000');
+        Assertion::lessOrEqualThan($postal, 9999, 'A valid Belgium postal cant be more than 9999');
         return new self($addressLine, $postal, $city, FodCountryCode::from(FodCountryCode::BELGIUM));
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function forForeign(string $addressLine, string $postal, string $city, FodCountryCode $countryCode): Address
     {
-        if (strlen($postal) > 12) {
-            throw new TypeError('Invalid postal code given');
-        }
-
+        Assertion::maxLength($postal, 12, 'Invalid postal code given of more than 12 characters');
         return new self($addressLine, $postal, $city, $countryCode);
     }
 

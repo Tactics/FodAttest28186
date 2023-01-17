@@ -2,16 +2,16 @@
 
 namespace Tests\Unit\ValueObject;
 
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
-use TypeError;
 
 final class DayOfBirthTest extends TestCase
 {
     public function testADayOfBirthIsAlwaysInThePast(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
 
         $future = (new DateTimeImmutable())->modify('+1 day');
         DayOfBirth::fromDateTime($future);

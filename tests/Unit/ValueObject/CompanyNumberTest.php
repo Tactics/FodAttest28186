@@ -2,10 +2,9 @@
 
 namespace Tests\Unit\ValueObject;
 
+use Assert\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
-use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
-use TypeError;
 
 final class CompanyNumberTest extends TestCase
 {
@@ -20,19 +19,19 @@ final class CompanyNumberTest extends TestCase
 
     public function testACompanyNumberMustContainTenNumbers(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         CompanyNumber::fromString('012.3456.7431');
     }
 
     public function testACompanyNumberCanContainOnlyNumbersAndDots(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         CompanyNumber::fromString('012-3456-7431');
     }
 
     public function testACompanyNumberCanNotContainLetters(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         CompanyNumber::fromString('012.A123.123');
     }
 }

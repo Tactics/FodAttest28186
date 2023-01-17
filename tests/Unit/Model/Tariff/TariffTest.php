@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Model\Tariff;
 
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Model\Tariff\Tariff;
@@ -9,7 +10,6 @@ use Tactics\FodAttest28186\Model\Tariff\TariffPeriod;
 use Tests\Unit\Factory\ChildFactory;
 use Tests\Unit\Factory\DayOfBirthFactory;
 use Tests\Unit\Factory\DebtorFactory;
-use TypeError;
 
 final class TariffTest extends TestCase
 {
@@ -38,20 +38,17 @@ final class TariffTest extends TestCase
             'disabled' => false,
             'testcase' => 'a tariff can not be created for children after the age of 14',
         ];
-    }
 
-    public function ageWarningProvider(): iterable
-    {
         yield [
             'age' => '21',
             'disabled' => true,
-            'testcase' => 'a tariff created for a severely disabled child that ends on a day after the child turned 21, corrects the end date to 1 day before he/she turns 21 and adds a warning to the tariff',
+            'testcase' => 'a tariff created for a severely disabled child that ends on a day after the child turned 21 is invalid, and suggests to corrects the end date to 1 day before he/she turns 21',
         ];
 
         yield [
             'age' => '14',
             'disabled' => false,
-            'testcase' => 'a tariff created for a child that ends on a day after the child turned 14, corrects the end date to 1 day before he/she turns 14 and adds a warning to the tariff',
+            'testcase' => 'a tariff created for a child that ends on a day after the child turned 14 is invalid, and suggests to corrects the end date to 1 day before he/she turns 14',
         ];
     }
 
@@ -64,7 +61,7 @@ final class TariffTest extends TestCase
         bool $disabled,
         string $testcase
     ): void {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
 
         $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
         $child = $this->childFactory->create($disabled, $dayOfBirth);
@@ -86,34 +83,4 @@ final class TariffTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider ageWarningProvider
-     * @testdox Test $testcase.
-     */
-    public function testAgeBasedWarnings(
-        string $age,
-        bool $disabled,
-        string $testcase
-    ): void {
-        $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
-        $child = $this->childFactory->create($disabled, $dayOfBirth);
-
-        $birthdayOnAge = $dayOfBirth->whenAge($age);
-        $monthBeforeBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('-1 month');
-        $monthAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 month');
-
-        $tariff = Tariff::create(
-            10,
-            100,
-            TariffPeriod::create($monthBeforeBirthdayOnAge, $monthAfterBirthdayOnAge),
-            $this->debtorFactory->create(
-                '65.03.06-006.36'
-            ),
-            $child
-        );
-
-        $this->assertTrue($tariff->hasWarnings());
-        $this->assertCount(1, $tariff->warnings());
-        $this->assertEquals($birthdayOnAge->format(), $tariff->period()->end()->modify('+1 day')->format('d-m-Y'));
-    }
 }

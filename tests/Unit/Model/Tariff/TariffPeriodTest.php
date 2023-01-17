@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Model\Tariff;
 
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Model\Tariff\TariffPeriod;
-use TypeError;
 
 final class TariffPeriodTest extends TestCase
 {
@@ -18,7 +18,7 @@ final class TariffPeriodTest extends TestCase
         string $end,
         string $testcase
     ): void {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
 
         $startDateTime = DateTimeImmutable::createFromFormat('d-m-Y', $start);
         $endDateTime = DateTimeImmutable::createFromFormat('d-m-Y', $end);

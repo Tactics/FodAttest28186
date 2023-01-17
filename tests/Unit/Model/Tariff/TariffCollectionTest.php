@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Model\Tariff;
 
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Model\Tariff\Tariff;
@@ -11,7 +12,6 @@ use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 use Tests\Unit\Factory\ChildFactory;
 use Tests\Unit\Factory\DayOfBirthFactory;
 use Tests\Unit\Factory\DebtorFactory;
-use TypeError;
 
 final class TariffCollectionTest extends TestCase
 {
@@ -29,7 +29,7 @@ final class TariffCollectionTest extends TestCase
 
     public function testATariffCollectionCanOnlyContain4Items(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
 
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $period = TariffPeriod::create($start, $start->modify('+2 months'));
@@ -53,6 +53,9 @@ final class TariffCollectionTest extends TestCase
         }
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public function testATariffCollectionSumEqualsToSumOfAllTariffs(): void
     {
         $start = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');

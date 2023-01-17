@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\ValueObject;
 
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
-use TypeError;
 
 final class NationalRegistryNumberTest extends TestCase
 {
@@ -41,7 +41,7 @@ final class NationalRegistryNumberTest extends TestCase
 
     public function testNationalRegistryNumberCanNotBeCreatedFromInvalidString(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         NationalRegistryNumber::fromString('86.04.V1-125.86');
     }
 

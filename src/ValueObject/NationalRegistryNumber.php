@@ -2,10 +2,10 @@
 
 namespace Tactics\FodAttest28186\ValueObject;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
-use InvalidArgumentException;
 use SetBased\Rijksregisternummer\RijksregisternummerHelper;
-use TypeError;
 
 final class NationalRegistryNumber
 {
@@ -13,17 +13,18 @@ final class NationalRegistryNumber
 
     /**
      * @param string $nationalRegistryNumber
+     * @throws AssertionFailedException
      */
     private function __construct(string $nationalRegistryNumber)
     {
         $clean = RijksregisternummerHelper::clean($nationalRegistryNumber);
-        if (!RijksregisternummerHelper::isValid($clean)) {
-            throw new TypeError('Invalid argument passed for NationalRegistryNumber');
-        }
-
+        Assertion::true(RijksregisternummerHelper::isValid($clean), 'Invalid argument passed for NationalRegistryNumber');
         $this->nationalRegistryNumber = $clean;
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function fromString(string $nationalRegistryNumber): NationalRegistryNumber
     {
         return new self($nationalRegistryNumber);

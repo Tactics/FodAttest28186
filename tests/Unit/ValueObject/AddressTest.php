@@ -5,10 +5,13 @@ namespace Tests\Unit\ValueObject;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\ValueObject\Address;
-use TypeError;
+use Assert\AssertionFailedException;
 
 final class AddressTest extends TestCase
 {
+    /**
+     * @throws AssertionFailedException
+     */
     public function testCreateValidAddressInBelgium(): void
     {
         $address = Address::forBelgium('Starrenhoflaan 14', '2920', 'Kapellen');
@@ -18,7 +21,7 @@ final class AddressTest extends TestCase
 
     public function testAddressInBelgiumValidatesPostalCode(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         Address::forBelgium('Starrenhoflaan 14', '10900', 'Kapellen');
     }
 
@@ -31,7 +34,7 @@ final class AddressTest extends TestCase
 
     public function testCreateInvalidForeignAddress(): void
     {
-        $this->expectException(TypeError::class);
+        $this->expectException(AssertionFailedException::class);
         Address::forForeign('Time Square', '1234567891123', 'New York', FodCountryCode::fromIsoCode('us'));
     }
 }

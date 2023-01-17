@@ -2,6 +2,8 @@
 
 namespace Tactics\FodAttest28186\Model\TaxSheet;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Generator;
 use Tactics\FodAttest28186\Enum\FodSheetType;
 use Tactics\FodAttest28186\Model\Child\Child;
@@ -9,7 +11,6 @@ use Tactics\FodAttest28186\Model\Debtor\Debtor;
 use Tactics\FodAttest28186\Model\Tariff\Tariff;
 use Tactics\FodAttest28186\Model\Tariff\TariffCollection;
 use Tactics\FodAttest28186\Model\Tariff\TariffGrouping;
-use TypeError;
 
 final class TaxSheet
 {
@@ -43,15 +44,13 @@ final class TaxSheet
         return new self($uuid, $type, $debtor, $child);
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public function add(Tariff $tariff): TaxSheet
     {
-        if (! $this->debtor->equals($tariff->debtor())) {
-            throw new TypeError('invalid debtor');
-        }
-
-        if (! $this->child->equals($tariff->child())) {
-            throw new TypeError('invalid child');
-        }
+        Assertion::true($this->debtor->equals($tariff->debtor()), 'invalid debtor');
+        Assertion::true($this->child->equals($tariff->child()), 'invalid child');
 
         $new = clone ($this);
         $tariffs = [...$this->tariffs, $tariff];
@@ -76,6 +75,7 @@ final class TaxSheet
 
     /**
      * @return Generator<TariffCollection>
+     * @throws AssertionFailedException
      */
     public function tariffGroups(): Generator
     {

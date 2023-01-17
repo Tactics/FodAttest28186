@@ -2,8 +2,8 @@
 
 namespace Tactics\FodAttest28186\ValueObject;
 
-use InvalidArgumentException;
-use TypeError;
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 final class CompanyNumber
 {
@@ -13,6 +13,7 @@ final class CompanyNumber
 
     /**
      * @param string $companyNumber
+     * @throws AssertionFailedException
      */
     private function __construct(string $companyNumber)
     {
@@ -20,22 +21,18 @@ final class CompanyNumber
         $firstChar = $companyNumber[0];
 
         //Check if the Company number starts with either 0 or 1.
-        if (!in_array((int) $firstChar, self::VALID_FIRST_CHAR, true)) {
-            throw new TypeError('Invalid company number passed: Must start with 0 or 1');
-        }
+        Assertion::inArray((int) $firstChar, self::VALID_FIRST_CHAR, 'Invalid company number passed: Must start with 0 or 1');
 
         $clean = str_replace('.', '', $companyNumber);
-        if (!is_numeric($clean)) {
-            throw new TypeError('Invalid company number passed: Must contain only digits');
-        }
-
-        if (strlen($clean) !== 10) {
-            throw new TypeError('Invalid company number passed: Must contain 10 digits');
-        }
+        Assertion::numeric($clean, 'Invalid company number passed: Must contain only digits');
+        Assertion::length($clean, 10, 'Invalid company number passed: Must contain 10 digitss');
 
         $this->companyNumber = $clean;
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function fromString(string $companyNumber): CompanyNumber
     {
         return new self($companyNumber);

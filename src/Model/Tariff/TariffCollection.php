@@ -3,7 +3,8 @@
 namespace Tactics\FodAttest28186\Model\Tariff;
 
 use Generator;
-use TypeError;
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 final class TariffCollection
 {
@@ -19,12 +20,12 @@ final class TariffCollection
         return new self();
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public function add(Tariff $tariff): TariffCollection
     {
-        if ($this->length() >= 4) {
-            throw new TypeError('Tariff collection can only consist of 4 items');
-        }
-
+        Assertion::lessThan($this->length(),4, 'Tariff collection can only consist of 4 items');
         $new = clone ($this);
         $values = [...$this->values, $tariff];
         $new->values = $values;

@@ -2,11 +2,12 @@
 
 namespace Tactics\FodAttest28186\Model\Tariff;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use RuntimeException;
 use Tactics\FodAttest28186\Model\Child\Child;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
-use TypeError;
 
 final class Tariff
 {
@@ -16,8 +17,6 @@ final class Tariff
     private Debtor $debtor;
     private Child $child;
 
-    private array $warnings = [];
-
     /**
      * @param int $days
      * @param int $tariff
@@ -25,7 +24,7 @@ final class Tariff
      * @param Debtor $debtor
      * @param Child $child
      *
-     * @throws RuntimeException
+     * @throws RuntimeException|AssertionFailedException
      */
     private function __construct(
         int $days,
@@ -36,31 +35,22 @@ final class Tariff
     ) {
         $maxAge = $child->isSeverelyDisabled() ? 21 : 14;
         $maxBirthday = $child->dayOfBirth()->whenAge($maxAge);
-        if ($maxBirthday->isBeforeOrEqual($period->begin())) {
-            throw new TypeError(
-                sprintf(
-                    'Tariff not allowed, child is %s at before start date of the tariff period %s',
-                    $maxAge,
-                    $period->begin()->format('Y-m-d')
-                )
-            );
-        }
 
-        if ($maxBirthday->isBeforeOrEqual($period->end())) {
-            $begin = $period->begin();
-            $end = DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day');
+        Assertion::true(!$maxBirthday->isBeforeOrEqual($period->begin()), sprintf(
+            'Tariff not allowed, child is %s at before start date of the tariff period %s',
+            $maxAge,
+            $period->begin()->format('Y-m-d')
+        ));
 
-            $this->warnings[] = sprintf(
-                'Tariff end date %s is invalid, since the child turned %s before this date. The date got corrected to %s (on day before he turns %s)',
-                $period->end()->format('Y-m-d'),
-                $maxAge,
-                $end->format('Y-m-d'),
-                $maxAge
-            );
+        Assertion::true(!$maxBirthday->isBeforeOrEqual($period->end()), sprintf(
+            'Tariff end date %s is invalid, since the child turned %s before this date. The date should be corrected to %s (one day before he turns %s)',
+            $period->end()->format('Y-m-d'),
+            $maxAge,
+            DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day')->format('Y-m-d'),
+            $maxAge
+        ));
 
-            $period = TariffPeriod::create($begin, $end);
-        }
-
+        $period = TariffPeriod::create($period->begin(), $period->end());
         $this->days = $days;
         $this->tariff = $tariff;
         $this->period = $period;
@@ -68,6 +58,9 @@ final class Tariff
         $this->child = $child;
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function create(
         int $days,
         int $tariff,
@@ -110,15 +103,5 @@ final class Tariff
     public function child(): Child
     {
         return $this->child;
-    }
-
-    public function hasWarnings(): bool
-    {
-        return count($this->warnings) > 0;
-    }
-
-    public function warnings(): array
-    {
-        return $this->warnings;
     }
 }

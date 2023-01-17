@@ -2,23 +2,27 @@
 
 namespace Tactics\FodAttest28186\ValueObject;
 
+use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Carbon\Carbon;
-use DateTimeImmutable;
 use DateTimeInterface;
-use TypeError;
 
 final class DayOfBirth
 {
     private Carbon $dayOfBirth;
 
+    /**
+     * @throws AssertionFailedException
+     */
     private function __construct(Carbon $dayOfBirth)
     {
-        if ($dayOfBirth->isFuture()) {
-            throw new TypeError('A date of birth can not be in the future');
-        }
+        Assertion::false($dayOfBirth->isFuture(), 'A date of birth can not be in the future');
         $this->dayOfBirth = $dayOfBirth;
     }
 
+    /**
+     * @throws AssertionFailedException
+     */
     public static function fromDateTime(DateTimeInterface $dayOfBirth): DayOfBirth
     {
         $toCarbon = (new Carbon($dayOfBirth));
