@@ -45,11 +45,11 @@ final class TaxSheet
 
     public function add(Tariff $tariff): TaxSheet
     {
-        if ($this->debtor->equals($tariff->debtor())) {
+        if (! $this->debtor->equals($tariff->debtor())) {
             throw new TypeError('invalid debtor');
         }
 
-        if ($this->child->equals($tariff->child())) {
+        if (! $this->child->equals($tariff->child())) {
             throw new TypeError('invalid child');
         }
 
