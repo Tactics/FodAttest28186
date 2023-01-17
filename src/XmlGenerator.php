@@ -12,14 +12,14 @@ use Tactics\FodAttest28186\Model\Child\ChildWithNationalRegistry;
 use Tactics\FodAttest28186\Model\Child\ChildWithoutNationalRegistry;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
 use Tactics\FodAttest28186\Model\InvoiceAgency\InvoiceAgency;
-use Tactics\FodAttest28186\Modal\Sender\Company;
-use Tactics\FodAttest28186\Modal\Sender\Person;
-use Tactics\FodAttest28186\Modal\Sender\Sender;
-use Tactics\FodAttest28186\Modal\Tariff\Tariff;
-use Tactics\FodAttest28186\Modal\Tariff\TariffCollection;
-use Tactics\FodAttest28186\Modal\Tariff\TariffXmlMapper;
-use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheet;
-use Tactics\FodAttest28186\Modal\TaxSheet\TaxSheetMap;
+use Tactics\FodAttest28186\Model\Sender\Company;
+use Tactics\FodAttest28186\Model\Sender\Person;
+use Tactics\FodAttest28186\Model\Sender\Sender;
+use Tactics\FodAttest28186\Model\Tariff\Tariff;
+use Tactics\FodAttest28186\Model\Tariff\TariffCollection;
+use Tactics\FodAttest28186\Model\Tariff\TariffXmlMapper;
+use Tactics\FodAttest28186\Model\TaxSheet\TaxSheet;
+use Tactics\FodAttest28186\Model\TaxSheet\TaxSheetMap;
 
 final class XmlGenerator
 {
