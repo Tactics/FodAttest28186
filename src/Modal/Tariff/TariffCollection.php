@@ -2,6 +2,7 @@
 
 namespace Tactics\FodAttest28186\Modal\Tariff;
 
+use Generator;
 use TypeError;
 
 final class TariffCollection
@@ -37,11 +38,13 @@ final class TariffCollection
     }
 
     /**
-     * @return Tariff[]
+     * @return Generator<Tariff>
      */
-    public function collection(): array
+    public function getIterator(): Generator
     {
-        return $this->values;
+        foreach ($this->values as $fiche) {
+            yield $fiche;
+        }
     }
 
     public function sum(): int

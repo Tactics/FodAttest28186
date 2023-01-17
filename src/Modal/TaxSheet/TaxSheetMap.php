@@ -48,7 +48,7 @@ final class TaxSheetMap
     }
 
     /**
-     * @return Generator
+     * @return Generator<TaxSheet>
      */
     public function getIterator(): Generator
     {

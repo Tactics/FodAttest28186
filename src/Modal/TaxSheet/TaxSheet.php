@@ -75,7 +75,7 @@ final class TaxSheet
     }
 
     /**
-     * @return Generator<TariffGrouping>
+     * @return Generator<TariffCollection>
      */
     public function tariffGroups(): Generator
     {

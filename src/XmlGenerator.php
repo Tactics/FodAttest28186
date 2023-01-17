@@ -184,10 +184,8 @@ EOT;
         $xml = '';
 
         foreach ($this->sheetCollection->getIterator() as $sheet) {
-            foreach ($sheet->tariffGroups() as $group) {
-                foreach ($group->getIterator() as $collection) {
-                    $xml .= $this->sheet($sheet, $collection);
-                }
+            foreach ($sheet->tariffGroups() as $collection) {
+                $xml .= $this->sheet($sheet, $collection);
             }
         }
 
