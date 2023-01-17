@@ -85,7 +85,7 @@ final class TaxSheet
         foreach ($chunks as $chunk) {
             $collection = TariffCollection::create();
             foreach ($chunk as $tariff) {
-                $collection->add($tariff);
+                $collection = $collection->add($tariff);
             }
             $collections = $collections->add($collection);
         }

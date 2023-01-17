@@ -207,7 +207,7 @@ EOT;
 
         $xml .= $this->child($sheet->child());
 
-        foreach ($tariffCollection as $index => $tariff) {
+        foreach ($tariffCollection->getIterator() as $index => $tariff) {
             $xml .= $this->tariff($index + 1, $tariff);
         }
 
@@ -215,6 +215,7 @@ EOT;
         $this->totalAmount += $totalAmount;
 
         $totalControlAmount = $totalAmount * 2;
+        $xml .= "<f86_2064_totalamount>$totalAmount</f86_2064_totalamount>";
         $xml .= "<f86_2059_totaalcontrole>$totalControlAmount</f86_2059_totaalcontrole>";
         $xml .= '</Fiche28186>';
 
