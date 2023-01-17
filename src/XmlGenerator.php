@@ -196,7 +196,8 @@ EOT;
     {
         $this->sheetCounter++;
 
-        $xml = $this->sheetInfo($sheet);
+        $xml = '<Fiche28186>';
+        $xml .= $this->sheetInfo($sheet);
         $xml .= $this->debtor($sheet->debtor());
 
         $certifier = $this->invoiceAgency->certifier();
@@ -215,6 +216,7 @@ EOT;
 
         $totalControlAmount = $totalAmount * 2;
         $xml .= "<f86_2059_totaalcontrole>$totalControlAmount</f86_2059_totaalcontrole>";
+        $xml .= '</Fiche28186>';
 
         return $xml;
     }
