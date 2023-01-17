@@ -6,12 +6,12 @@ use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\Enum\FodFileType;
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\Enum\FodSendCode;
-use Tactics\FodAttest28186\Modal\Certifier\Certifier;
-use Tactics\FodAttest28186\Modal\Child\Child;
-use Tactics\FodAttest28186\Modal\Child\ChildWithNationalRegistry;
-use Tactics\FodAttest28186\Modal\Child\ChildWithoutNationalRegistry;
-use Tactics\FodAttest28186\Modal\Debtor\Debtor;
-use Tactics\FodAttest28186\Modal\InvoiceAgency\InvoiceAgency;
+use Tactics\FodAttest28186\Model\Certifier\Certifier;
+use Tactics\FodAttest28186\Model\Child\Child;
+use Tactics\FodAttest28186\Model\Child\ChildWithNationalRegistry;
+use Tactics\FodAttest28186\Model\Child\ChildWithoutNationalRegistry;
+use Tactics\FodAttest28186\Model\Debtor\Debtor;
+use Tactics\FodAttest28186\Model\InvoiceAgency\InvoiceAgency;
 use Tactics\FodAttest28186\Modal\Sender\Company;
 use Tactics\FodAttest28186\Modal\Sender\Person;
 use Tactics\FodAttest28186\Modal\Sender\Sender;
@@ -212,9 +212,10 @@ EOT;
         }
 
         $totalAmount = $tariffCollection->sum();
-        $this->totalAmount += $totalAmount;
 
         $totalControlAmount = $totalAmount * 2;
+        $this->totalAmount += $totalControlAmount;
+
         $xml .= "<f86_2064_totalamount>$totalAmount</f86_2064_totalamount>";
         $xml .= "<f86_2059_totaalcontrole>$totalControlAmount</f86_2059_totaalcontrole>";
         $xml .= '</Fiche28186>';
@@ -228,7 +229,7 @@ EOT;
     <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
     <f2008_typefiche>28186</f2008_typefiche>
     <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
-    <f2010_referentie>{$sheet->uuid()->toString()}</f2010_referentie>
+    <f2010_referentie>{$sheet->uid()->toString()}</f2010_referentie>
     <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
     <f2029_enkelopgave325>0</f2029_enkelopgave325>
 EOT;

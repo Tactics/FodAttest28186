@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Factory;
 
-use Tactics\FodAttest28186\Modal\Debtor\Debtor;
+use Tactics\FodAttest28186\Model\Debtor\Debtor;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 
 final class DebtorFactory

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Factory;
 
 use Tactics\FodAttest28186\Enum\FodCountryCode;
-use Tactics\FodAttest28186\Modal\Child\ChildWithoutNationalRegistry;
+use Tactics\FodAttest28186\Model\Child\ChildWithoutNationalRegistry;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
