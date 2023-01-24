@@ -28,7 +28,7 @@ final class DayOfBirth
      */
     public static function fromDateTime(DateTimeInterface $dayOfBirth): DayOfBirth
     {
-        $toCarbon = (new Carbon($dayOfBirth));
+        $toCarbon = Carbon::instance($dayOfBirth);
         return new self($toCarbon);
     }
 
@@ -42,19 +42,19 @@ final class DayOfBirth
 
     public function isBefore(DateTimeInterface $dateTime): bool
     {
-        $toCarbon = (new Carbon($dateTime))->startOfDay();
+        $toCarbon = Carbon::instance($dateTime)->startOfDay();
         return $this->dayOfBirth->startOfDay()->isBefore($toCarbon);
     }
 
     public function isSameDay(DateTimeInterface $dateTime): bool
     {
-        $toCarbon = (new Carbon($dateTime))->startOfDay();
+        $toCarbon = Carbon::instance($dateTime)->startOfDay();
         return $this->dayOfBirth->startOfDay()->isSameDay($toCarbon);
     }
 
     public function isBeforeOrEqual(DateTimeInterface $dateTime): bool
     {
-        $toCarbon = (new Carbon($dateTime))->startOfDay();
+        $toCarbon = Carbon::instance($dateTime)->startOfDay();
         return $this->dayOfBirth->startOfDay()->isBefore($toCarbon) ||
             $this->dayOfBirth->startOfDay()->isSameDay($toCarbon);
     }
