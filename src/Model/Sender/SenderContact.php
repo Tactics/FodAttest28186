@@ -9,9 +9,15 @@ use Tactics\FodAttest28186\Enum\FodLanguageCode;
  */
 final class SenderContact
 {
-    private string $name;
+    /**
+     * @var string
+     */
+    private $name;
 
-    private FodLanguageCode $languageCode;
+    /**
+     * @var FodLanguageCode
+     */
+    private $languageCode;
 
     /**
      * @param string $name

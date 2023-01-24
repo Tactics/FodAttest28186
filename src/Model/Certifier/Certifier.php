@@ -12,13 +12,25 @@ use Tactics\FodAttest28186\ValueObject\CompanyNumber;
  */
 final class Certifier
 {
-    private string $name;
+    /**
+     * @var string
+     */
+    private $name;
 
-    private CompanyNumber $companyNumber;
+    /**
+     * @var CompanyNumber
+     */
+    private $companyNumber;
 
-    private Address $address;
+    /**
+     * @var Address
+     */
+    private $address;
 
-    private FodCertificationCode $certificationCode;
+    /**
+     * @var FodCertificationCode
+     */
+    private $certificationCode;
 
     /**
      * @param string $name

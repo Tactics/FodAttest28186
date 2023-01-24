@@ -9,7 +9,10 @@ use SetBased\Rijksregisternummer\RijksregisternummerHelper;
 
 final class NationalRegistryNumber
 {
-    private string $nationalRegistryNumber;
+    /**
+     * @var string
+     */
+    private $nationalRegistryNumber;
 
     /**
      * @param string $nationalRegistryNumber

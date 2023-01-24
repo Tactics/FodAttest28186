@@ -15,6 +15,6 @@ services:
       PHP_XDEBUG_TRIGGER_VALUE: 'enable'
     env_file:
       - .env
-    image: wodby/php:7.4-dev-macos-4.33.4
+    image: wodby/php:7.3-dev-macos-4.27.7
     volumes:
       - "./:/var/www/html"

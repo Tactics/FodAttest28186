@@ -11,11 +11,26 @@ use Tactics\FodAttest28186\Model\Debtor\Debtor;
 
 final class Tariff
 {
-    private int $days;
-    private int $tariff;
-    private TariffPeriod $period;
-    private Debtor $debtor;
-    private Child $child;
+    /**
+     * @var int
+     */
+    private $days;
+    /**
+     * @var int
+     */
+    private $tariff;
+    /**
+     * @var TariffPeriod
+     */
+    private $period;
+    /**
+     * @var Debtor
+     */
+    private $debtor;
+    /**
+     * @var Child
+     */
+    private $child;
 
     /**
      * @param int $days

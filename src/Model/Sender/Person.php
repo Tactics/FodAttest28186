@@ -12,17 +12,35 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class Person implements Sender
 {
-    private string $name;
+    /**
+     * @var string
+     */
+    private $name;
 
-    private Address $address;
+    /**
+     * @var Address
+     */
+    private $address;
 
-    private string $phoneNumber;
+    /**
+     * @var string
+     */
+    private $phoneNumber;
 
-    private string $email;
+    /**
+     * @var string
+     */
+    private $email;
 
-    private NationalRegistryNumber $nationalRegistryNumber;
+    /**
+     * @var NationalRegistryNumber
+     */
+    private $nationalRegistryNumber;
 
-    private FodLanguageCode $languageCode;
+    /**
+     * @var FodLanguageCode
+     */
+    private $languageCode;
 
     /**
      * @param string $name

@@ -11,11 +11,20 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class Debtor
 {
-    private ?DebtorDetails $details = null;
+    /**
+     * @var DebtorDetails|null
+     */
+    private $details = null;
 
-    private ?CompanyNumber $companyNumber = null;
+    /**
+     * @var CompanyNumber|null
+     */
+    private $companyNumber = null;
 
-    private NationalRegistryNumber $nationalRegistryNumber;
+    /**
+     * @var NationalRegistryNumber
+     */
+    private $nationalRegistryNumber;
 
     /**
      * @param NationalRegistryNumber $nationalRegistryNumber

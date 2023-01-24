@@ -12,9 +12,18 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class ChildWithNationalRegistry implements Child
 {
-    private NationalRegistryNumber $nationalRegistryNumber;
-    private ?ChildDetails $details = null;
-    private bool $severelyDisabled = false;
+    /**
+     * @var NationalRegistryNumber
+     */
+    private $nationalRegistryNumber;
+    /**
+     * @var ChildDetails|null
+     */
+    private $details = null;
+    /**
+     * @var bool
+     */
+    private $severelyDisabled = false;
 
     /**
      * @param NationalRegistryNumber $nationalRegistryNumber

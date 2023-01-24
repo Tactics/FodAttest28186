@@ -11,13 +11,25 @@ use Tactics\FodAttest28186\Enum\FodCountryCode;
  */
 final class Address
 {
-    private string $addressLine;
+    /**
+     * @var string
+     */
+    private $addressLine;
 
-    private string $postal;
+    /**
+     * @var string
+     */
+    private $postal;
 
-    private string $city;
+    /**
+     * @var string
+     */
+    private $city;
 
-    private FodCountryCode $countryCode;
+    /**
+     * @var FodCountryCode
+     */
+    private $countryCode;
 
     private function __construct(string $addressLine, string $postal, string $city, FodCountryCode $countryCode)
     {

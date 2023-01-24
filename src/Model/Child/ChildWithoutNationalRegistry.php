@@ -12,11 +12,14 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class ChildWithoutNationalRegistry implements Child
 {
-    private ChildDetails $details;
     /**
-     * @var true
+     * @var ChildDetails
      */
-    private bool $severelyDisabled = false;
+    private $details;
+    /**
+     * @var bool
+     */
+    private $severelyDisabled = false;
 
     /**
      * @param ChildDetails $details

@@ -2,13 +2,16 @@
 
 namespace Tactics\FodAttest28186\Model\Tariff;
 
-use Generator;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
+use Generator;
 
 final class TariffCollection
 {
-    private array $values;
+    /**
+     * @var array
+     */
+    private $values;
 
     public function __construct()
     {
@@ -25,10 +28,10 @@ final class TariffCollection
      */
     public function add(Tariff $tariff): TariffCollection
     {
-        Assertion::lessThan($this->length(),4, 'Tariff collection can only consist of 4 items');
+        Assertion::lessThan($this->length(), 4, 'Tariff collection can only consist of 4 items');
         $new = clone ($this);
-        $values = [...$this->values, $tariff];
-        $new->values = $values;
+        $this->values[] = $tariff;
+        $new->values = $this->values;
 
         return $new;
     }

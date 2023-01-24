@@ -9,7 +9,10 @@ use DateTimeInterface;
 
 final class DayOfBirth
 {
-    private Carbon $dayOfBirth;
+    /**
+     * @var Carbon
+     */
+    private $dayOfBirth;
 
     /**
      * @throws AssertionFailedException
