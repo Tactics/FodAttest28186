@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\ValueObject;
 
+use Assert\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
 use Tactics\FodAttest28186\Enum\FodCountryCode;
 use Tactics\FodAttest28186\ValueObject\Address;
-use Assert\AssertionFailedException;
 
 final class AddressTest extends TestCase
 {
