@@ -14,13 +14,28 @@ use Tactics\FodAttest28186\Model\Tariff\TariffGrouping;
 
 final class TaxSheet
 {
-    private TaxSheetUid $uid;
-    private Debtor $debtor;
-    private Child $child;
+    /**
+     * @var TaxSheetUid
+     */
+    private $uid;
+    /**
+     * @var Debtor
+     */
+    private $debtor;
+    /**
+     * @var Child
+     */
+    private $child;
 
-    private array $tariffs;
+    /**
+     * @var array
+     */
+    private $tariffs;
 
-    private FodSheetType $type;
+    /**
+     * @var FodSheetType
+     */
+    private $type;
 
     private function __construct(
         TaxSheetUid $uuid,
@@ -53,7 +68,8 @@ final class TaxSheet
         Assertion::true($this->child->equals($tariff->child()), 'invalid child');
 
         $new = clone ($this);
-        $tariffs = [...$this->tariffs, $tariff];
+        $this->tariffs[] = $tariff;
+        $tariffs = $this->tariffs;
         $new->tariffs = $tariffs;
         return $new;
     }

@@ -8,9 +8,15 @@ use DateTimeImmutable;
 
 final class TariffPeriod
 {
-    private DateTimeImmutable $begin;
+    /**
+     * @var DateTimeImmutable
+     */
+    private $begin;
 
-    private DateTimeImmutable $end;
+    /**
+     * @var DateTimeImmutable
+     */
+    private $end;
 
     /**
      * @param DateTimeImmutable $begin

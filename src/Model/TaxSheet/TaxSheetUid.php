@@ -7,7 +7,10 @@ use Assert\AssertionFailedException;
 
 final class TaxSheetUid
 {
-    private string $uid;
+    /**
+     * @var string
+     */
+    private $uid;
 
     /**
      * @throws AssertionFailedException

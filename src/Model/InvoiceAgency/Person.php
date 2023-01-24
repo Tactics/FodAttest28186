@@ -12,13 +12,25 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
  */
 final class Person implements InvoiceAgency
 {
-    private string $name;
+    /**
+     * @var string
+     */
+    private $name;
 
-    private Address $address;
+    /**
+     * @var Address
+     */
+    private $address;
 
-    private NationalRegistryNumber $nationalRegistryNumber;
+    /**
+     * @var NationalRegistryNumber
+     */
+    private $nationalRegistryNumber;
 
-    private ?Certifier $certifier = null;
+    /**
+     * @var Certifier|null
+     */
+    private $certifier = null;
 
     /**
      * @param string $name

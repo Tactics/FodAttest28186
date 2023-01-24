@@ -9,7 +9,7 @@ final class TaxSheetMap
     /**
      * @var TaxSheet[]
      */
-    private array $sheets = [];
+    private $sheets = [];
 
     private function __construct()
     {

@@ -18,7 +18,7 @@ jobs:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '7.4'
+                    php-version: '7.3'
                     coverage: none
                     tools: composer:v2
             -   run: composer clearcache
@@ -34,7 +34,7 @@ jobs:
             -   uses: actions/checkout@v2
             -   uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '7.4'
+                    php-version: '7.3'
                     coverage: none
                     tools: composer:v2
             -   run: composer clearcache

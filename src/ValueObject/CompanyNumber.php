@@ -9,7 +9,10 @@ final class CompanyNumber
 {
     private const VALID_FIRST_CHAR = [0, 1];
 
-    private string $companyNumber;
+    /**
+     * @var string
+     */
+    private $companyNumber;
 
     /**
      * @param string $companyNumber

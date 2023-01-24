@@ -13,9 +13,18 @@ use Tests\Unit\Factory\DebtorFactory;
 
 final class TariffTest extends TestCase
 {
-    private DebtorFactory $debtorFactory;
-    private ChildFactory $childFactory;
-    private DayOfBirthFactory $dayOfBirthFactory;
+    /**
+     * @var DebtorFactory
+     */
+    private $debtorFactory;
+    /**
+     * @var ChildFactory
+     */
+    private $childFactory;
+    /**
+     * @var DayOfBirthFactory
+     */
+    private $dayOfBirthFactory;
 
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -82,5 +91,4 @@ final class TariffTest extends TestCase
             $child
         );
     }
-
 }

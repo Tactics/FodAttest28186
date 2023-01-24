@@ -10,13 +10,25 @@ use Tactics\FodAttest28186\ValueObject\DayOfBirth;
  */
 final class ChildDetails
 {
-    private string $familyName;
+    /**
+     * @var string
+     */
+    private $familyName;
 
-    private string $givenName;
+    /**
+     * @var string
+     */
+    private $givenName;
 
-    private Address $address;
+    /**
+     * @var Address
+     */
+    private $address;
 
-    private DayOfBirth $dayOfBirth;
+    /**
+     * @var DayOfBirth
+     */
+    private $dayOfBirth;
 
     /**
      * @param string $familyName

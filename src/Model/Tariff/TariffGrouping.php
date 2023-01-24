@@ -10,7 +10,7 @@ final class TariffGrouping implements IteratorAggregate
     /**
      * @var TariffCollection[]
      */
-    private array $grouping;
+    private $grouping;
 
     private function __construct()
     {
@@ -25,8 +25,8 @@ final class TariffGrouping implements IteratorAggregate
     public function add(TariffCollection $tariffCollection): TariffGrouping
     {
         $new = clone ($this);
-        $grouping = [...$this->grouping, $tariffCollection];
-        $new->grouping = $grouping;
+        $this->grouping[] = $tariffCollection;
+        $new->grouping = $this->grouping;
         return $new;
     }
 

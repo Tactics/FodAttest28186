@@ -29,21 +29,45 @@ final class XmlGenerator
 
     private const FIRSTNAME_MAX_LENGTH = 30;
 
-    private int $year;
+    /**
+     * @var int
+     */
+    private $year;
 
-    private FodFileType $fileType;
+    /**
+     * @var FodFileType
+     */
+    private $fileType;
 
-    private Sender $sender;
+    /**
+     * @var Sender
+     */
+    private $sender;
 
-    private FodSendCode $sendCode;
+    /**
+     * @var FodSendCode
+     */
+    private $sendCode;
 
-    private InvoiceAgency $invoiceAgency;
+    /**
+     * @var InvoiceAgency
+     */
+    private $invoiceAgency;
 
-    private TaxSheetMap $sheetCollection;
+    /**
+     * @var TaxSheetMap
+     */
+    private $sheetCollection;
 
-    private int $sheetCounter = 0;
+    /**
+     * @var int
+     */
+    private $sheetCounter = 0;
 
-    private int $totalAmount = 0;
+    /**
+     * @var int
+     */
+    private $totalAmount = 0;
 
     /**
      * @param int $year

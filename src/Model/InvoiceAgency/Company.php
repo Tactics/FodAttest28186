@@ -13,13 +13,25 @@ use Tactics\FodAttest28186\ValueObject\CompanyNumber;
  */
 final class Company implements InvoiceAgency
 {
-    private string $name;
+    /**
+     * @var string
+     */
+    private $name;
 
-    private Address $address;
+    /**
+     * @var Address
+     */
+    private $address;
 
-    private CompanyNumber $companyNumber;
+    /**
+     * @var CompanyNumber
+     */
+    private $companyNumber;
 
-    private ?Certifier $certifier = null;
+    /**
+     * @var Certifier|null
+     */
+    private $certifier = null;
 
     /**
      * @param string $name
