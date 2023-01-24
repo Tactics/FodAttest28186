@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1674553244">
-  <project timestamp="1674553244">
+<coverage generated="1674563677">
+  <project timestamp="1674563677">
     <file name="/var/www/html/src/Enum/Enum.php">
       <class name="Tactics\FodAttest28186\Enum\Enum" namespace="global">
         <metrics complexity="5" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="6" elements="11" coveredelements="9"/>
