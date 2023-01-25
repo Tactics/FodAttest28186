@@ -1,6 +1,13 @@
 {
     "name": "tactics/fod-attest-28186",
     "description": "This is a package for generating the XML needed for Tax Certificate 281.86",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Tactics",
+            "email": "info@tactics.be"
+        }
+    ],
     "require": {
         "php": ">=7.4",
         "setbased/rijksregisternummer": "^1.2",
