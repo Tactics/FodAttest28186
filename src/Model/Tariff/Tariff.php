@@ -37,15 +37,17 @@ final class Tariff
         $maxAge = $child->isSeverelyDisabled() ? 21 : 14;
         $maxBirthday = $child->dayOfBirth()->whenAge($maxAge);
 
-        if($maxBirthday->isBeforeOrEqual($period->begin())) {
-            throw new InvalidTariffException(sprintf(
+        if ($maxBirthday->isBeforeOrEqual($period->begin())) {
+            throw new InvalidTariffException(
+                sprintf(
                     'Tariff not allowed, child is %s at before start date of the tariff period %s',
                     $maxAge,
-                    $period->begin()->format('Y-m-d'))
+                    $period->begin()->format('Y-m-d')
+                )
             );
         }
 
-        if($maxBirthday->isBeforeOrEqual($period->end())) {
+        if ($maxBirthday->isBeforeOrEqual($period->end())) {
             throw new InvalidEndDateException(sprintf(
                 'Tariff end date %s is invalid, since the child turned %s before this date. The date should be corrected to %s (one day before he turns %s)',
                 $period->end()->format('Y-m-d'),
