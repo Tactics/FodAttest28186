@@ -2,6 +2,7 @@
 
 namespace Tactics\FodAttest28186\Model\Certifier;
 
+use Assert\AssertionFailedException;
 use Tactics\FodAttest28186\Enum\FodCertificationCode;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
@@ -75,6 +76,7 @@ final class Certifier
      * This is useful when this package is used in applications pertaining daycare.
      *
      * @return Certifier
+     * @throws AssertionFailedException
      */
     public static function createForOpgroeienRegie(): Certifier
     {

@@ -40,7 +40,7 @@ final class Person implements InvoiceAgency
         return new self($name, $address, $nationalRegistryNumber);
     }
 
-    public function withCertifier(Certifier $certifier): Person
+    public function withCertifier(Certifier $certifier): self
     {
         $clone = clone $this;
         $clone->certifier = $certifier;

@@ -13,5 +13,7 @@ interface InvoiceAgency
 
     public function identifier(): string;
 
+    public function withCertifier(Certifier $certifier): self;
+
     public function certifier(): ?Certifier;
 }
