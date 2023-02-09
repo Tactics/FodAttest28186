@@ -48,11 +48,11 @@ final class Person implements InvoiceAgency
         string $name,
         Address $address,
         NationalRegistryNumber $nationalRegistryNumber
-    ): Person {
+    ): self {
         return new self($name, $address, $nationalRegistryNumber);
     }
 
-    public function withCertifier(Certifier $certifier): Person
+    public function withCertifier(Certifier $certifier): InvoiceAgency
     {
         $clone = clone $this;
         $clone->certifier = $certifier;

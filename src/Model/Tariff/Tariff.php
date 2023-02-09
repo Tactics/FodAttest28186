@@ -6,6 +6,8 @@ use Assert\Assertion;
 use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use RuntimeException;
+use Tactics\FodAttest28186\Exception\InvalidEndDateException;
+use Tactics\FodAttest28186\Exception\InvalidTariffException;
 use Tactics\FodAttest28186\Model\Child\Child;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
 
@@ -39,7 +41,7 @@ final class Tariff
      * @param Debtor $debtor
      * @param Child $child
      *
-     * @throws RuntimeException|AssertionFailedException
+     * @throws RuntimeException|InvalidTariffException|InvalidEndDateException
      */
     private function __construct(
         int $days,
@@ -51,21 +53,26 @@ final class Tariff
         $maxAge = $child->isSeverelyDisabled() ? 21 : 14;
         $maxBirthday = $child->dayOfBirth()->whenAge($maxAge);
 
-        Assertion::true(!$maxBirthday->isBeforeOrEqual($period->begin()), sprintf(
-            'Tariff not allowed, child is %s at before start date of the tariff period %s',
-            $maxAge,
-            $period->begin()->format('Y-m-d')
-        ));
+        if ($maxBirthday->isBeforeOrEqual($period->begin())) {
+            throw new InvalidTariffException(
+                sprintf(
+                    'Tariff not allowed, child is %s at before start date of the tariff period %s',
+                    $maxAge,
+                    $period->begin()->format('Y-m-d')
+                )
+            );
+        }
 
-        Assertion::true(!$maxBirthday->isBeforeOrEqual($period->end()), sprintf(
-            'Tariff end date %s is invalid, since the child turned %s before this date. The date should be corrected to %s (one day before he turns %s)',
-            $period->end()->format('Y-m-d'),
-            $maxAge,
-            DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day')->format('Y-m-d'),
-            $maxAge
-        ));
+        if ($maxBirthday->isBeforeOrEqual($period->end())) {
+            throw new InvalidEndDateException(sprintf(
+                'Tariff end date %s is invalid, since the child turned %s before this date. The date should be corrected to %s (one day before he turns %s)',
+                $period->end()->format('Y-m-d'),
+                $maxAge,
+                DateTimeImmutable::createFromFormat('d-m-Y', $maxBirthday->format())->modify('- 1 day')->format('Y-m-d'),
+                $maxAge
+            ));
+        }
 
-        $period = TariffPeriod::create($period->begin(), $period->end());
         $this->days = $days;
         $this->tariff = $tariff;
         $this->period = $period;
@@ -74,7 +81,14 @@ final class Tariff
     }
 
     /**
-     * @throws AssertionFailedException
+     * @param int $days
+     * @param int $tariff
+     * @param TariffPeriod $period
+     * @param Debtor $debtor
+     * @param Child $child
+     * @return Tariff
+     * @throws InvalidEndDateException
+     * @throws InvalidTariffException
      */
     public static function create(
         int $days,

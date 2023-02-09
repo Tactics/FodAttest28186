@@ -53,7 +53,7 @@ final class Company implements InvoiceAgency
         return new self($name, $address, $companyNumber);
     }
 
-    public function withCertifier(Certifier $certifier): Company
+    public function withCertifier(Certifier $certifier): InvoiceAgency
     {
         $clone = clone $this;
         $clone->certifier = $certifier;

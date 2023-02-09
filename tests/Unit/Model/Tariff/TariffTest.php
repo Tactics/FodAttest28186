@@ -2,9 +2,10 @@
 
 namespace Tests\Unit\Model\Tariff;
 
-use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Tactics\FodAttest28186\Exception\InvalidEndDateException;
+use Tactics\FodAttest28186\Exception\InvalidTariffException;
 use Tactics\FodAttest28186\Model\Tariff\Tariff;
 use Tactics\FodAttest28186\Model\Tariff\TariffPeriod;
 use Tests\Unit\Factory\ChildFactory;
@@ -34,7 +35,7 @@ final class TariffTest extends TestCase
         $this->dayOfBirthFactory = new DayOfBirthFactory();
     }
 
-    public function ageRulesProvider(): iterable
+    public function invalidTarriffProvider(): iterable
     {
         yield [
             'age' => '21',
@@ -47,7 +48,41 @@ final class TariffTest extends TestCase
             'disabled' => false,
             'testcase' => 'a tariff can not be created for children after the age of 14',
         ];
+    }
 
+    /**
+     * @dataProvider invalidTarriffProvider
+     * @testdox Test $testcase.
+     */
+    public function testAgeBasedBlockingValidation(
+        string $age,
+        bool $disabled,
+        string $testcase
+    ): void {
+        $this->expectException(InvalidTariffException::class);
+
+        $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
+        $child = $this->childFactory->create($disabled, $dayOfBirth);
+
+        $birthdayOnAge = $dayOfBirth->whenAge($age);
+        $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
+
+        $period = TariffPeriod::create($dayAfterBirthdayOnAge, $dayAfterBirthdayOnAge->modify('+1 month'));
+        $debtor = $this->debtorFactory->create(
+            '65.03.06-006.36'
+        );
+
+        Tariff::create(
+            10,
+            100,
+            $period,
+            $debtor,
+            $child
+        );
+    }
+
+    public function invalidEnddateProvider(): iterable
+    {
         yield [
             'age' => '21',
             'disabled' => true,
@@ -62,23 +97,23 @@ final class TariffTest extends TestCase
     }
 
     /**
-     * @dataProvider ageRulesProvider
+     * @dataProvider invalidEnddateProvider
      * @testdox Test $testcase.
      */
-    public function testAgeBasedBlockingValidation(
+    public function testAgeEndDateBlockingValidation(
         string $age,
         bool $disabled,
         string $testcase
     ): void {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidEndDateException::class);
 
         $dayOfBirth = $this->dayOfBirthFactory->create('1986-04-25');
         $child = $this->childFactory->create($disabled, $dayOfBirth);
 
         $birthdayOnAge = $dayOfBirth->whenAge($age);
-        $dayAfterBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('+1 day');
+        $dayBeforBirthdayOnAge = DateTimeImmutable::createFromFormat('d-m-Y', $birthdayOnAge->format())->modify('-1 day');
 
-        $period = TariffPeriod::create($dayAfterBirthdayOnAge, $dayAfterBirthdayOnAge->modify('+1 month'));
+        $period = TariffPeriod::create($dayBeforBirthdayOnAge, $dayBeforBirthdayOnAge->modify('+1 month'));
         $debtor = $this->debtorFactory->create(
             '65.03.06-006.36'
         );
