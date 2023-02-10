@@ -36,11 +36,5 @@ final class TariffPeriodTest extends TestCase
             'end' => '01-02-2021',
             'testcase' => 'the end date of a periode can not be before the start date',
         ];
-
-        yield [
-            'start' => '01-01-2021',
-            'end' => '01-01-2022',
-            'testcase' => 'the start and end date of a periode need to be in the same year',
-        ];
     }
 }

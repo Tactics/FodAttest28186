@@ -26,7 +26,6 @@ final class TariffPeriod
     private function __construct(DateTimeImmutable $begin, DateTimeImmutable $end)
     {
         Assertion::lessOrEqualThan($begin, $end, 'Begin can not be after end of tariff');
-        Assertion::eq($begin->format('Y'), $end->format('Y'), 'Begin and end of tariff need to be in the same year');
         $this->begin = $begin;
         $this->end = $end;
     }
