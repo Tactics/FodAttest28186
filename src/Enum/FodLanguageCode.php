@@ -12,6 +12,10 @@ final class FodLanguageCode extends Enum
 
     public const GERMAN = 3;
 
+    public static function default(): FodLanguageCode
+    {
+        return self::from(self::DUTCH);
+    }
     public static function fromLanguage(string $lang): FodLanguageCode
     {
         switch (strtolower($lang)) {
