@@ -65,7 +65,14 @@ final class Tariff
     }
 
     /**
-     * @throws AssertionFailedException
+     * @param int $days
+     * @param int $tariff
+     * @param TariffPeriod $period
+     * @param Debtor $debtor
+     * @param Child $child
+     * @return Tariff
+     * @throws InvalidEndDateException
+     * @throws InvalidTariffException
      */
     public static function create(
         int $days,
