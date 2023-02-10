@@ -2,6 +2,8 @@
 
 namespace Tactics\FodAttest28186\Model\Debtor;
 
+use Tactics\FodAttest28186\Exception\EmptyFamilyNameException;
+use Tactics\FodAttest28186\Exception\EmptyGivenNameException;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
@@ -56,6 +58,10 @@ final class DebtorDetails
         $this->placeOfBirth = $placeOfBirth;
     }
 
+    /**
+     * @throws EmptyFamilyNameException
+     * @throws EmptyGivenNameException
+     */
     public static function create(
         string $familyName,
         string $givenName,
@@ -63,6 +69,19 @@ final class DebtorDetails
         DayOfBirth $dayOfBirth,
         string $placeOfBirth
     ): DebtorDetails {
+
+        if (empty($givenName)) {
+            throw new EmptyGivenNameException(
+                'A debtor must have a given name'
+            );
+        }
+
+        if (empty($familyName)) {
+            throw new EmptyFamilyNameException(
+                'A debtor must have a family name'
+            );
+        }
+
         return new self(
             $familyName,
             $givenName,
