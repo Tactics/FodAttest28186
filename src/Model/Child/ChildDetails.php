@@ -2,6 +2,9 @@
 
 namespace Tactics\FodAttest28186\Model\Child;
 
+use Tactics\FodAttest28186\Exception\EmptyFamilyNameException;
+use Tactics\FodAttest28186\Exception\EmptyGivenNameException;
+use Tactics\FodAttest28186\Exception\InvalidTariffException;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 
@@ -36,12 +39,29 @@ final class ChildDetails
         $this->dayOfBirth = $dayOfBirth;
     }
 
+    /**
+     * @throws EmptyGivenNameException
+     * @throws EmptyFamilyNameException
+     */
     public static function create(
         string $familyName,
         string $givenName,
         Address $address,
         DayOfBirth $dayOfBirth
     ): ChildDetails {
+
+        if (empty($givenName)) {
+            throw new EmptyGivenNameException(
+                'A child must have a given name'
+            );
+        }
+
+        if (empty($familyName)) {
+            throw new EmptyFamilyNameException(
+                'A child must have a family name'
+            );
+        }
+
         return new self($familyName, $givenName, $address, $dayOfBirth);
     }
 
