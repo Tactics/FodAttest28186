@@ -17,7 +17,7 @@ final class TaxSheetUid
     ) {
         Assertion::minLength($uid, 1);
         Assertion::maxLength($uid, 20);
-        $this->uid = $uid;
+        $this->uid = trim($uid);
     }
 
     /**

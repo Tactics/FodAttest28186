@@ -27,7 +27,7 @@ final class Person implements InvoiceAgency
      */
     private function __construct(string $name, Address $address, NationalRegistryNumber $nationalRegistryNumber)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->address = $address;
         $this->nationalRegistryNumber = $nationalRegistryNumber;
     }

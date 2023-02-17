@@ -19,7 +19,7 @@ final class SenderContact
      */
     public function __construct(string $name, FodLanguageCode $languageCode)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->languageCode = $languageCode;
     }
 

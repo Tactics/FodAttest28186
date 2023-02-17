@@ -34,11 +34,11 @@ final class DebtorDetails
         DayOfBirth $dayOfBirth,
         string $placeOfBirth
     ) {
-        $this->familyName = $familyName;
-        $this->givenName = $givenName;
+        $this->familyName = trim($familyName);
+        $this->givenName = trim($givenName);
         $this->address = $address;
         $this->dayOfBirth = $dayOfBirth;
-        $this->placeOfBirth = $placeOfBirth;
+        $this->placeOfBirth = trim($placeOfBirth);
     }
 
     public static function create(

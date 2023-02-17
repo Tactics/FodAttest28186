@@ -25,9 +25,9 @@ final class CompanyNumber
 
         $clean = str_replace('.', '', $companyNumber);
         Assertion::numeric($clean, 'Invalid company number passed: Must contain only digits');
-        Assertion::length($clean, 10, 'Invalid company number passed: Must contain 10 digitss');
+        Assertion::length($clean, 10, 'Invalid company number passed: Must contain 10 digits');
 
-        $this->companyNumber = $clean;
+        $this->companyNumber = trim($clean);
     }
 
     /**

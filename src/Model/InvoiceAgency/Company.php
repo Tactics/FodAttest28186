@@ -28,7 +28,7 @@ final class Company implements InvoiceAgency
      */
     private function __construct(string $name, Address $address, CompanyNumber $companyNumber)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->address = $address;
         $this->companyNumber = $companyNumber;
     }

@@ -33,7 +33,7 @@ final class Certifier
         Address $address,
         FodCertificationCode $certificationCode
     ) {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->companyNumber = $companyNumber;
         $this->address = $address;
         $this->certificationCode = $certificationCode;

@@ -34,10 +34,10 @@ final class Company implements Sender
      */
     private function __construct(string $name, Address $address, string $phoneNumber, string $email, CompanyNumber $companyNumber, SenderContact $senderContact)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->address = $address;
-        $this->phoneNumber = $phoneNumber;
-        $this->email = $email;
+        $this->phoneNumber = trim($phoneNumber);
+        $this->email = trim($email);
         $this->companyNumber = $companyNumber;
         $this->senderContact = $senderContact;
     }

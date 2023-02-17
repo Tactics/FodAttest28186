@@ -30,8 +30,8 @@ final class ChildDetails
         Address $address,
         DayOfBirth $dayOfBirth
     ) {
-        $this->familyName = $familyName;
-        $this->givenName = $givenName;
+        $this->familyName = trim($familyName);
+        $this->givenName = trim($givenName);
         $this->address = $address;
         $this->dayOfBirth = $dayOfBirth;
     }

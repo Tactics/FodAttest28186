@@ -40,7 +40,7 @@ final class DayOfBirthTest extends TestCase
         $rawDayOfBirth = DateTimeImmutable::createFromFormat('Y-m-d', '1986-04-25');
         $dayOfBirth = DayOfBirth::fromDateTime($rawDayOfBirth);
 
-        $this->assertEquals('25-04-1986', $dayOfBirth->format());
+        $this->assertEquals('25-04-1986', $dayOfBirth->format('d-m-Y'));
     }
 
     public function testADayOfBirthKnowsWhetherItIsBeforeASpecificMomentInTime(): void
