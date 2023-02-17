@@ -51,5 +51,10 @@
         "phpstan-cli": [
             "./vendor/bin/phpstan analyse --memory-limit=-1 --error-format github --ansi"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
     }
 }

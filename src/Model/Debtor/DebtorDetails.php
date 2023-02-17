@@ -54,7 +54,6 @@ final class DebtorDetails
         DayOfBirth $dayOfBirth,
         string $placeOfBirth
     ): DebtorDetails {
-
         if (empty($givenName)) {
             throw new EmptyGivenNameException(
                 'A debtor must have a given name'

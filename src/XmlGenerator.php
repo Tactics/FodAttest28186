@@ -244,7 +244,7 @@ EOT;
     <f2011_nationaalnr>$rrn</f2011_nationaalnr>
 EOT;
         if ($debtorDetails) {
-            $xml.= <<< EOT
+            $xml .= <<< EOT
                 <f2013_naam>$debtorName</f2013_naam>
                 <f2015_adres>$debtorAddressLine</f2015_adres>
 EOT;
@@ -257,7 +257,7 @@ EOT;
  EOT;
         }
 
-        $xml.= <<< EOT
+        $xml .= <<< EOT
     <f2018_landwoonplaats>{$country->value()}</f2018_landwoonplaats>
     <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
     <f2029_enkelopgave325>0</f2029_enkelopgave325>
