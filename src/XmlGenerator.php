@@ -24,7 +24,7 @@ use Tactics\FodAttest28186\Model\TaxSheet\TaxSheetMap;
 final class XmlGenerator
 {
     private const DATE_FORMAT = 'd-m-Y';
-    
+
     /**
      * @var int
      */
@@ -396,7 +396,7 @@ EOT;
                 $this->addressMaxLength()
             )
         );
-        $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format(self::DATE_FORMAT);
+        $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format();
 
         return [$childName, $childFirstName, $childAddressCity, $childAddress, $childAddressLine, $formattedChildDayOfBirth];
     }

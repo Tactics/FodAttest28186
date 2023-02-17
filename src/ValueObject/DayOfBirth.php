@@ -59,8 +59,8 @@ final class DayOfBirth
             $this->dayOfBirth->startOfDay()->isSameDay($toCarbon);
     }
 
-    public function format(string $format): string
+    public function format(): string
     {
-        return $this->dayOfBirth->format($format);
+        return $this->dayOfBirth->format('d-m-Y');
     }
 }
