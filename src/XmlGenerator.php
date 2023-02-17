@@ -11,7 +11,9 @@ use Tactics\FodAttest28186\Model\Child\ChildDetails;
 use Tactics\FodAttest28186\Model\Child\ChildWithNationalRegistry;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
 use Tactics\FodAttest28186\Model\Debtor\DebtorDetails;
+use Tactics\FodAttest28186\Model\InvoiceAgency\Company as InvoiceAgencyCompany;
 use Tactics\FodAttest28186\Model\InvoiceAgency\InvoiceAgency;
+use Tactics\FodAttest28186\Model\InvoiceAgency\Person as InvoiceAgencyPerson;
 use Tactics\FodAttest28186\Model\Sender\Company;
 use Tactics\FodAttest28186\Model\Sender\Person;
 use Tactics\FodAttest28186\Model\Sender\Sender;
@@ -20,8 +22,6 @@ use Tactics\FodAttest28186\Model\Tariff\TariffCollection;
 use Tactics\FodAttest28186\Model\Tariff\TariffXmlMapper;
 use Tactics\FodAttest28186\Model\TaxSheet\TaxSheet;
 use Tactics\FodAttest28186\Model\TaxSheet\TaxSheetMap;
-use Tactics\FodAttest28186\Model\InvoiceAgency\Company as InvoiceAgencyCompany;
-use Tactics\FodAttest28186\Model\InvoiceAgency\Person as InvoiceAgencyPerson;
 
 final class XmlGenerator
 {
