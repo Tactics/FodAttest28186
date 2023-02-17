@@ -27,10 +27,6 @@ final class XmlGenerator
 {
     private const DATE_FORMAT = 'd-m-Y';
 
-    private const NAME_MAX_LENGTH = 41;
-
-    private const FIRSTNAME_MAX_LENGTH = 30;
-
     private int $year;
 
     private FodFileType $fileType;
@@ -378,14 +374,14 @@ EOT;
                 $this->addressMaxLength()
             )
         );
-        $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format(self::DATE_FORMAT);
+        $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format();
 
         return [$childName, $childFirstName, $childAddressCity, $childAddress, $childAddressLine, $formattedChildDayOfBirth];
     }
 
     private function prepareCertifierDetails(Certifier $certifier): array
     {
-        $certifierName = $this->escapeInvalidXmlChars($this->formatMaxLength($certifier->name(), self::NAME_MAX_LENGTH));
+        $certifierName = $this->escapeInvalidXmlChars($this->formatMaxLength($certifier->name(), $this->nameMaxLength()));
         $certifierAddress = $certifier->address();
         $certifierAddressCity = $this->escapeInvalidXmlChars(
             $this->formatMaxLength(
