@@ -259,10 +259,11 @@ EOT;
  EOT;
         } else {
             $xml .= <<< EOT
-                <f2012_geboortedatum/>
                 <f2013_naam/>
                 <f2014_naampartner/>
                 <f2015_adres/>
+                <f2016_postcodebelgisch/>
+                <f2017_gemeente/>
 EOT;
         }
 
@@ -467,7 +468,7 @@ EOT;
         $childAddressLine = $this->escapeInvalidXmlChars(
             $this->formatMaxLength(
                 $childAddress->addressLine(),
-                $this->addressMaxLength()
+                $this->childAddressMaxLength()
             )
         );
         $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format();
@@ -501,18 +502,13 @@ EOT;
         $totalRecords = $this->sheetCounter + 2;
         $triangularNumberRecords = ($this->sheetCounter * ($this->sheetCounter + 1)) / 2;
 
-        $xml = <<<EOT
+        return <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
+    <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
     <r8010_aantalrecords>$totalRecords</r8010_aantalrecords>
     <r8011_controletotaal>$triangularNumberRecords</r8011_controletotaal>
     <r8012_controletotaal>$this->totalAmount</r8012_controletotaal>
 EOT;
-
-        if ($this->invoiceAgency instanceof Company) {
-            $xml .= sprintf('<r8005_registratienummer>%s</r8005_registratienummer>', $this->invoiceAgency->identifier());
-        }
-
-        return $xml;
     }
 
     private function controlNumbersTotal(): string
@@ -552,6 +548,17 @@ EOT;
         }
 
         return 200;
+    }
+
+    /**
+     * Return the max length an address can be. Specs changed for fiscal year 2022.
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function childAddressMaxLength(): int
+    {
+        return 41;
     }
 
     /**
