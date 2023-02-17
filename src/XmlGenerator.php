@@ -7,10 +7,10 @@ use Tactics\FodAttest28186\Enum\FodFileType;
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\Enum\FodSendCode;
 use Tactics\FodAttest28186\Model\Certifier\Certifier;
-use Tactics\FodAttest28186\Model\Child\Child;
+use Tactics\FodAttest28186\Model\Child\ChildDetails;
 use Tactics\FodAttest28186\Model\Child\ChildWithNationalRegistry;
-use Tactics\FodAttest28186\Model\Child\ChildWithoutNationalRegistry;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
+use Tactics\FodAttest28186\Model\Debtor\DebtorDetails;
 use Tactics\FodAttest28186\Model\InvoiceAgency\InvoiceAgency;
 use Tactics\FodAttest28186\Model\Sender\Company;
 use Tactics\FodAttest28186\Model\Sender\Person;
@@ -24,11 +24,7 @@ use Tactics\FodAttest28186\Model\TaxSheet\TaxSheetMap;
 final class XmlGenerator
 {
     private const DATE_FORMAT = 'd-m-Y';
-
-    private const NAME_MAX_LENGTH = 41;
-
-    private const FIRSTNAME_MAX_LENGTH = 30;
-
+    
     /**
      * @var int
      */
@@ -97,10 +93,9 @@ final class XmlGenerator
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
         $xml .= '<Verzendingen><Verzending>';
-        $xml .= $this->info();
-        $xml .= $this->sender();
+        $xml .= $this->senderInfo();
         $xml .= '<Aangiften><Aangifte>';
-        $xml .= $this->invoiceAgency();
+        $xml .= $this->declarationInfo();
         $xml .= '<Opgaven><Opgave32586>';
         $xml .= $this->sheets();
         $xml .= '</Opgave32586></Opgaven>';
@@ -112,43 +107,32 @@ final class XmlGenerator
         return $xml;
     }
 
-    private function info(): string
+    private function senderInfo(): string
     {
-        $date = date(self::DATE_FORMAT);
-
-        return <<<EOT
-    <v002_inkomstenjaar>$this->year</v002_inkomstenjaar>
-    <v0010_bestandtype>{$this->fileType->value()}</v0010_bestandtype>
-    <v0011_aanmaakdatum>$date</v0011_aanmaakdatum>
-    <v0025_typeenvoi>{$this->sendCode->value()}</v0025_typeenvoi>
-EOT;
-    }
-
-    private function sender(): string
-    {
-        $senderName = $this->escapeInvalidXmlChars($this->sender->name());
-        $senderAddress = $this->escapeInvalidXmlChars(
-            $this->formatMaxLength(
-                $this->sender->address()->addressLine(),
-                $this->addressMaxLength()
-            )
-        );
+        [$date, $senderName, $senderAddress] = $this->prepareSenderInfo();
 
         $xml = <<<EOT
+    <v0002_inkomstenjaar>$this->year</v0002_inkomstenjaar>
+    <v0010_bestandtype>{$this->fileType->value()}</v0010_bestandtype>
+    <v0011_aanmaakdatum>$date</v0011_aanmaakdatum>
     <v0014_naam>$senderName</v0014_naam>
     <v0015_adres>$senderAddress</v0015_adres>
     <v0016_postcode>{$this->sender->address()->postal()}</v0016_postcode>
     <v0017_gemeente>{$this->sender->address()->city()}</v0017_gemeente>
     <v0018_telefoonnummer>{$this->sender->phoneNumber()}</v0018_telefoonnummer>
-    <v0023_emailadres>{$this->sender->email()}</v0023_emailadres>
     <v0021_contactpersoon>{$this->sender->contactName()}</v0021_contactpersoon>
     <v0022_taalcode>{$this->sender->contactLanguageCode()->value()}</v0022_taalcode>
-    <v0028_landwoonplaats>{$this->sender->address()->countryCode()->value()}</v0028_landwoonplaats>
+    <v0023_emailadres>{$this->sender->email()}</v0023_emailadres>
 EOT;
 
         if ($this->sender instanceof Company) {
             $xml .= sprintf('<v0024_nationaalnr>%s</v0024_nationaalnr>', $this->sender->identifier());
         }
+
+        $xml .= <<<EOT
+    <v0025_typeenvoi>{$this->sendCode->value()}</v0025_typeenvoi>
+    <v0028_landwoonplaats>{$this->sender->address()->countryCode()->value()}</v0028_landwoonplaats>
+EOT;
 
         if ($this->sender instanceof Person) {
             $xml .= sprintf('<v0030_nationaalnummer>%s</v0030_nationaalnummer>', $this->sender->identifier());
@@ -157,9 +141,67 @@ EOT;
         return $xml;
     }
 
-    private function invoiceAgency(): string
+    private function prepareSenderInfo(): array
     {
-        $name = $this->escapeInvalidXmlChars($this->invoiceAgency->name());
+        $date = date(self::DATE_FORMAT);
+        $senderName = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->sender->name(),
+                $this->nameMaxLength()
+            )
+        );
+
+        $senderAddress = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->sender->address()->addressLine(),
+                $this->addressMaxLength()
+            )
+        );
+
+        return [$date, $senderName, $senderAddress];
+    }
+
+    private function declarationInfo(): string
+    {
+        [$splitName, $addressLine, $postal, $city, $countryCode, $languageCodeDutch] = $this->prepareDeclarationInfo();
+
+        $xml = "<a1002_inkomstenjaar>$this->year</a1002_inkomstenjaar>";
+
+        if ($this->invoiceAgency instanceof Company) {
+            $xml .= sprintf('<a1005_registratienummer>%s</a1005_registratienummer>', $this->invoiceAgency->identifier());
+        }
+
+        $splitNameNl = $splitName;
+        $xml .= sprintf('<a1011_naamnl1>%s</a1011_naamnl1>', array_shift($splitNameNl));
+        if (!empty($splitNameNl)) {
+            $xml .= sprintf('<a1012_naamnl2>%s</a1012_naamnl2>', implode('', $splitNameNl));
+        }
+
+
+        $xml .= <<<EOT
+    <a1013_adresnl>$addressLine</a1013_adresnl>
+    <a1014_postcodebelgisch>$postal</a1014_postcodebelgisch>
+    <a1015_gemeente>$city</a1015_gemeente>
+    <a1016_landwoonplaats>$countryCode</a1016_landwoonplaats>
+    <a1020_taalcode>$languageCodeDutch</a1020_taalcode>
+EOT;
+
+        if ($this->invoiceAgency instanceof Person) {
+            $xml .= sprintf('<a1037_nationaalnr>%s</a1037_nationaalnr>', $this->invoiceAgency->identifier());
+        }
+
+        return $xml;
+    }
+
+    private function prepareDeclarationInfo(): array
+    {
+        $formattedName = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->invoiceAgency->name(),
+                $this->declarationNameMaxLength()
+            )
+        );
+        $splitName = $this->splitName($formattedName);
         $addressLine = $this->escapeInvalidXmlChars(
             $this->formatMaxLength(
                 $this->invoiceAgency->address()->addressLine(),
@@ -167,40 +209,18 @@ EOT;
             )
         );
         $postal = $this->invoiceAgency->address()->postal();
-        $city = $this->invoiceAgency->address()->city();
+        $city = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->invoiceAgency->address()->city(),
+                $this->cityMaxLength()
+            )
+        );
+
         $countryCode = $this->invoiceAgency->address()->countryCode()->value();
 
         $languageCodeDutch = FodLanguageCode::DUTCH;
-        $languageCodeFrench = FodLanguageCode::FRENCH;
-        $languageCodeGerman = FodLanguageCode::GERMAN;
 
-        $xml = <<<EOT
-    <a1002_inkomstenjaar>$this->year</a1002_inkomstenjaar>
-    <a1011_naamnl1>$name</a1011_naamnl1>
-    <a1013_adresnl>$addressLine</a1013_adresnl>
-    <a1014_postcodebelgisch>$postal</a1014_postcodebelgisch>
-    <a1015_gemeente>$city</a1015_gemeente>
-    <a1016_landwoonplaats>$countryCode</a1016_landwoonplaats>
-    <a1020_taalcode>$languageCodeDutch</a1020_taalcode>
-    <a1027_naamfr1>$name</a1027_naamfr1>
-    <a1029_adresfr>$addressLine</a1029_adresfr>
-    <a1030_gemeentefr>$city</a1030_gemeentefr>
-    <a1031_taalfr>$languageCodeFrench</a1031_taalfr>
-    <a1032_naamde1>$name</a1032_naamde1>
-    <a1034_adresde>$addressLine</a1034_adresde>
-    <a1035_gemeentede>$city</a1035_gemeentede>
-    <a1036_taalde>$languageCodeGerman</a1036_taalde>
-EOT;
-
-        if ($this->invoiceAgency instanceof Company) {
-            $xml .= sprintf('<a1005_registratienummer>%s</a1005_registratienummer>', $this->invoiceAgency->identifier());
-        }
-
-        if ($this->invoiceAgency instanceof Person) {
-            $xml .= sprintf('<a1037_nationaalnr>%s</a1037_nationaalnr>', $this->invoiceAgency->identifier());
-        }
-
-        return $xml;
+        return [$splitName, $addressLine, $postal, $city, $countryCode, $languageCodeDutch];
     }
 
     private function sheets(): string
@@ -220,16 +240,88 @@ EOT;
     {
         $this->sheetCounter++;
 
-        $xml = '<Fiche28186>';
-        $xml .= $this->sheetInfo($sheet);
-        $xml .= $this->debtor($sheet->debtor());
+        [$debtorCompanyNumber, $rrn, $country, $debtorDetails] = $this->prepareDebtorInfo($sheet->debtor());
+        if ($debtorDetails) {
+            [$debtorName, $debtorFirstName, $debtorAddressCity, $debtorAddressLine, $debtorPostal] = $this->prepareDebtorDetails($debtorDetails);
+        }
+
+        $child = $sheet->child();
+        $childDetails = $child->details();
+        if ($childDetails) {
+            [$childName, $childFirstName, $childAddressCity, $childAddress, $childAddressLine, $formattedChildDayOfBirth] = $this->prepareChildDetails($childDetails);
+        }
 
         $certifier = $this->invoiceAgency->certifier();
         if ($certifier instanceof Certifier) {
-            $xml .= $this->certifier($certifier);
+            [$certifierName, $certifierAddressCity, $certifierAddressLine, $certifierPostal] = $this->prepareCertifierDetails($certifier);
         }
 
-        $xml .= $this->child($sheet->child());
+        $xml = <<<EOT
+    <Fiche28186>
+    <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
+    <f2005_registratienummer>$debtorCompanyNumber</f2005_registratienummer>
+    <f2008_typefiche>28186</f2008_typefiche>
+    <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
+    <f2010_referentie>{$sheet->uid()->toString()}</f2010_referentie>
+    <f2011_nationaalnr>$rrn</f2011_nationaalnr>
+EOT;
+        if ($debtorDetails) {
+            $xml.= <<< EOT
+                <f2013_naam>$debtorName</f2013_naam>
+                <f2015_adres>$debtorAddressLine</f2015_adres>
+EOT;
+            if ($country->value() === FodCountryCode::BELGIUM) {
+                $xml .= "<f2016_postcodebelgisch>$debtorPostal</f2016_postcodebelgisch>";
+            }
+
+            $xml .= <<< EOT
+                <f2017_gemeente>$debtorAddressCity</f2017_gemeente>
+ EOT;
+        }
+
+        $xml.= <<< EOT
+    <f2018_landwoonplaats>{$country->value()}</f2018_landwoonplaats>
+    <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
+    <f2029_enkelopgave325>0</f2029_enkelopgave325>
+EOT;
+
+        if ($debtorDetails) {
+            if ($country->value() !== FodCountryCode::BELGIUM) {
+                $xml .= "<f2112_buitenlandspostnummer>$debtorPostal</f2112_buitenlandspostnummer>";
+            }
+            $xml .= <<<EOT
+                <f2114_voornamen>$debtorFirstName</f2114_voornamen>
+EOT;
+        }
+
+        if ($certifier instanceof Certifier) {
+            $xml .= <<<EOT
+    <f86_2031_certificationautorisation>{$certifier->certificationCode()->value()}</f86_2031_certificationautorisation>
+    <f86_2100_certifierpostnr>$certifierPostal</f86_2100_certifierpostnr>
+    <f86_2109_certifiercbenumber>{$certifier->companyNumber()->value()}</f86_2109_certifiercbenumber>
+    <f86_2154_certifiermunicipality>$certifierAddressCity</f86_2154_certifiermunicipality>
+    <f86_2155_certifiername>$certifierName</f86_2155_certifiername>
+    <f86_2156_certifieradres>$certifierAddressLine</f86_2156_certifieradres>
+EOT;
+        }
+
+        if ($childDetails) {
+            $xml .= <<<EOT
+    <f86_2101_childcountry>{$childAddress->countryCode()->value()}</f86_2101_childcountry>
+    <f86_2102_childaddress>$childAddressLine</f86_2102_childaddress>
+    <f86_2106_childname>$childName</f86_2106_childname>
+    <f86_2107_childfirstname>$childFirstName</f86_2107_childfirstname>
+    <f86_2139_childpostnr>{$childAddress->postal()}</f86_2139_childpostnr>
+    <f86_2140_childmunicipality>{$childAddressCity}</f86_2140_childmunicipality>
+    <f86_2163_childbirthdate>$formattedChildDayOfBirth</f86_2163_childbirthdate>
+EOT;
+        }
+
+        if ($child instanceof ChildWithNationalRegistry) {
+            $xml .= <<<EOT
+    <f86_2153_nnchild>{$child->nationalRegistryNumber()->value()}</f86_2153_nnchild>
+EOT;
+        }
 
         foreach ($tariffCollection->getIterator() as $index => $tariff) {
             $xml .= $this->tariff($index + 1, $tariff);
@@ -247,139 +339,87 @@ EOT;
         return $xml;
     }
 
-    private function sheetInfo(TaxSheet $sheet): string
-    {
-        return <<<EOT
-    <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
-    <f2008_typefiche>28186</f2008_typefiche>
-    <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
-    <f2010_referentie>{$sheet->uid()->toString()}</f2010_referentie>
-    <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
-    <f2029_enkelopgave325>0</f2029_enkelopgave325>
-EOT;
-    }
-
-    /**
-     * Company number is a required field but is not a required prop on Debtor (just because it does not make sense to require it)
-     * That's why we check if company number is set and otherwise print a '0' (default value for this field in the XML example of the government)
-     *
-     * @param Debtor $debtor
-     * @return string
-     */
-    private function debtor(Debtor $debtor): string
+    private function prepareDebtorInfo(Debtor $debtor): array
     {
         $debtorCompanyNumber = $debtor->companyNumber() ?? '0';
         $rrn = $debtor->nationalRegistryNumber()->value();
 
-        $xml = <<<EOT
-    <f2005_registratienummer>$debtorCompanyNumber</f2005_registratienummer>
-    <f2011_nationaalnr>$rrn</f2011_nationaalnr>
-EOT;
-
-        // Due to a bug/inconsistency in the tool we always need to provide the postal code.
+        // Due to a bug/inconsistency in the tool we always need to provide the country code.
         // We don't want to make this required on the debtor since this is a mistake.
         // So we extract it first here or fallback to a default.
         $country = $debtor->details() ?
             $debtor->details()->address()->countryCode() :
             FodCountryCode::from(FodCountryCode::BELGIUM);
 
-        $xml .= <<<EOT
-        <f2018_landwoonplaats>{$country->value()}</f2018_landwoonplaats>
-EOT;
-
         $debtorDetails = $debtor->details();
-        if ($debtorDetails) {
-            $name = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->familyName(), self::NAME_MAX_LENGTH));
-            $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->givenName(), self::FIRSTNAME_MAX_LENGTH));
-            $address = $debtorDetails->address();
-            $addressLine = $this->escapeInvalidXmlChars(
-                $this->formatMaxLength(
-                    $address->addressLine(),
-                    $this->addressMaxLength()
-                )
-            );
 
-            $xml .= <<<EOT
-    <f2013_naam>$name</f2013_naam>
-    <f2015_adres>$addressLine</f2015_adres>
-    <f2017_gemeente>{$address->city()}</f2017_gemeente>
-    <f2114_voornamen>$firstName</f2114_voornamen>
-EOT;
-        }
-
-        $postal = $debtor->details() ?
-            $debtor->details()->address()->postal() :
-            null;
-
-        if ($postal) {
-            if ($country->value() === FodCountryCode::BELGIUM) {
-                $xml .= "<f2016_postcodebelgisch>$postal</f2016_postcodebelgisch>";
-            } else {
-                $xml .= "<f2112_buitenlandspostnummer>$postal</f2112_buitenlandspostnummer>";
-            }
-        }
-
-        return $xml;
+        return [$debtorCompanyNumber, $rrn, $country, $debtorDetails];
     }
 
-    private function certifier(Certifier $certifier): string
+    private function prepareDebtorDetails(DebtorDetails $debtorDetails): array
     {
-        $name = $this->escapeInvalidXmlChars($this->formatMaxLength($certifier->name(), self::NAME_MAX_LENGTH));
-        $address = $certifier->address();
-        $addressLine = $this->escapeInvalidXmlChars(
+        $debtorName = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->familyName(), $this->nameMaxLength()));
+        $debtorFirstName = $this->escapeInvalidXmlChars($this->formatMaxLength($debtorDetails->givenName(), $this->firstnameDebtorMaxLength()));
+        $debtorAddress = $debtorDetails->address();
+        $debtorAddressCity = $this->escapeInvalidXmlChars(
             $this->formatMaxLength(
-                $address->addressLine(),
+                $debtorAddress->city(),
+                $this->cityMaxLength()
+            )
+        );
+        $debtorAddressLine = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $debtorAddress->addressLine(),
                 $this->addressMaxLength()
             )
         );
-        $postal = $address->postal();
+        $debtorPostal = $debtorDetails->address()->postal();
 
-        return <<<EOT
-    <f86_2031_certificationautorisation>{$certifier->certificationCode()->value()}</f86_2031_certificationautorisation>
-    <f86_2100_certifierpostnr>$postal</f86_2100_certifierpostnr>
-    <f86_2109_certifiercbenumber>{$certifier->companyNumber()->value()}</f86_2109_certifiercbenumber>
-    <f86_2154_certifiermunicipality>{$address->city()}</f86_2154_certifiermunicipality>
-    <f86_2155_certifiername>$name</f86_2155_certifiername>
-    <f86_2156_certifieradres>$addressLine</f86_2156_certifieradres>
-EOT;
+        return [$debtorName, $debtorFirstName, $debtorAddressCity, $debtorAddressLine, $debtorPostal];
     }
 
-    private function child(Child $child): string
+    //TODO: DebtorDetails and ChildDetails should be an interface so these two functions can be abstracted
+    private function prepareChildDetails(ChildDetails  $childDetails): array
     {
-        $xml = '';
+        $childName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->familyName(), $this->nameMaxLength()));
+        $childFirstName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->givenName(), $this->firstnameMaxLength()));
+        $childAddress = $childDetails->address();
+        $childAddressCity = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $childAddress->city(),
+                $this->cityMaxLength()
+            )
+        );
+        $childAddressLine = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $childAddress->addressLine(),
+                $this->addressMaxLength()
+            )
+        );
+        $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format(self::DATE_FORMAT);
 
-        if ($child instanceof ChildWithoutNationalRegistry) {
-            $childDetails = $child->details();
+        return [$childName, $childFirstName, $childAddressCity, $childAddress, $childAddressLine, $formattedChildDayOfBirth];
+    }
 
-            $name = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->familyName(), self::NAME_MAX_LENGTH));
-            $firstName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->givenName(), self::FIRSTNAME_MAX_LENGTH));
-            $address = $childDetails->address();
-            $addressLine = $this->escapeInvalidXmlChars(
-                $this->formatMaxLength(
-                    $address->addressLine(),
-                    $this->addressMaxLength()
-                )
-            );
-            $formattedDayOfBirth = $childDetails->dayOfBirth()->format(self::DATE_FORMAT);
+    private function prepareCertifierDetails(Certifier $certifier): array
+    {
+        $certifierName = $this->escapeInvalidXmlChars($this->formatMaxLength($certifier->name(), $this->nameMaxLength()));
+        $certifierAddress = $certifier->address();
+        $certifierAddressCity = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $certifierAddress->city(),
+                $this->cityMaxLength()
+            )
+        );
+        $certifierAddressLine = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $certifierAddress->addressLine(),
+                $this->addressMaxLength()
+            )
+        );
+        $certifierPostal = $certifierAddress->postal();
 
-            $xml = <<<EOT
-    <f86_2101_childcountry>{$address->countryCode()->value()}</f86_2101_childcountry>
-    <f86_2102_childaddress>$addressLine</f86_2102_childaddress>
-    <f86_2106_childname>$name</f86_2106_childname>
-    <f86_2107_childfirstname>$firstName</f86_2107_childfirstname>
-    <f86_2139_childpostnr>{$address->postal()}</f86_2139_childpostnr>
-    <f86_2140_childmunicipality>{$address->city()}</f86_2140_childmunicipality>
-    <f86_2163_childbirthdate>$formattedDayOfBirth</f86_2163_childbirthdate>
-EOT;
-        }
-
-        if ($child instanceof ChildWithNationalRegistry) {
-            $xml = <<<EOT
-    <f86_2153_nnchild>{$child->nationalRegistryNumber()->value()}</f86_2153_nnchild>
-EOT;
-        }
-
-        return $xml;
+        return [$certifierName, $certifierAddressCity, $certifierAddressLine, $certifierPostal];
     }
 
     private function tariff(int $period, Tariff $tariff): string
@@ -440,7 +480,7 @@ EOT;
 
     /**
      * Return the max length an address can be. Specs changed for fiscal year 2022.
-     * Keep backwards compatibility
+     * Keep backwards compatibility (for 7 years) because specs can change over time
      *
      * @return int
      */
@@ -451,5 +491,83 @@ EOT;
         }
 
         return 200;
+    }
+
+    /**
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function cityMaxLength(): int
+    {
+        return 27;
+    }
+
+
+    /**
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function nameMaxLength(): int
+    {
+        return 41;
+    }
+
+    /**
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function firstnameMaxLength(): int
+    {
+        return 30;
+    }
+
+    /**
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function firstnameDebtorMaxLength(): int
+    {
+        return 15;
+    }
+
+    /**
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function declarationNameMaxLength(): int
+    {
+        /* NOTE: there are two name fields for agencies. The first one is capped at 28 characters. The second one is
+         * capped at 31 characters. The max length of a name is therefore 28 + 31 characters.
+         */
+        return 28 + 31;
+    }
+
+    /**
+     * there are two name fields for agencies.
+     * The first one is capped at 28 characters.
+     * The second one is capped at 31 characters.
+     *
+     * We split the string on 28 characters which could return us an array of 1, 2 or 3 elements (since the formattedName max length is 28 + 31)
+     *
+     * @param string $formattedName
+     * @return array
+     */
+    private function splitName(string $formattedName): array
+    {
+        /* NOTE: we use str_split and not mb_str_split since we are uncertain if the FOD module counts bytes or chars.
+         * str_split will return fewer characters if there are more bytes.
+         * mb_str_split will return 28 characters but if the FOD module counts bytes this would cause a problem.
+         */
+        return str_split($formattedName, 28);
     }
 }

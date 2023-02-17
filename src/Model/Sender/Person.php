@@ -52,10 +52,10 @@ final class Person implements Sender
      */
     public function __construct(string $name, Address $address, string $phoneNumber, string $email, NationalRegistryNumber $nationalRegistryNumber, FodLanguageCode $languageCode)
     {
-        $this->name = $name;
+        $this->name = trim($name);
         $this->address = $address;
-        $this->phoneNumber = $phoneNumber;
-        $this->email = $email;
+        $this->phoneNumber = trim($phoneNumber);
+        $this->email = trim($email);
         $this->nationalRegistryNumber = $nationalRegistryNumber;
         $this->languageCode = $languageCode;
     }

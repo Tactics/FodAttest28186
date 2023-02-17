@@ -33,9 +33,9 @@ final class Address
 
     private function __construct(string $addressLine, string $postal, string $city, FodCountryCode $countryCode)
     {
-        $this->addressLine = $addressLine;
-        $this->postal = $postal;
-        $this->city = $city;
+        $this->addressLine = trim($addressLine);
+        $this->postal = trim($postal);
+        $this->city = trim($city);
         $this->countryCode = $countryCode;
     }
 
