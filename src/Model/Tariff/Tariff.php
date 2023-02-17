@@ -2,8 +2,6 @@
 
 namespace Tactics\FodAttest28186\Model\Tariff;
 
-use Assert\Assertion;
-use Assert\AssertionFailedException;
 use DateTimeImmutable;
 use RuntimeException;
 use Tactics\FodAttest28186\Exception\InvalidEndDateException;

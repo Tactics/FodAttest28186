@@ -60,4 +60,9 @@ final class TariffCollection
         }
         return $sum;
     }
+
+    public function getTariff($tariffNumber): ?Tariff
+    {
+        return $this->values[$tariffNumber - 1] ?? null;
+    }
 }

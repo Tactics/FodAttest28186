@@ -11,7 +11,9 @@ use Tactics\FodAttest28186\Model\Child\ChildDetails;
 use Tactics\FodAttest28186\Model\Child\ChildWithNationalRegistry;
 use Tactics\FodAttest28186\Model\Debtor\Debtor;
 use Tactics\FodAttest28186\Model\Debtor\DebtorDetails;
+use Tactics\FodAttest28186\Model\InvoiceAgency\Company as InvoiceAgencyCompany;
 use Tactics\FodAttest28186\Model\InvoiceAgency\InvoiceAgency;
+use Tactics\FodAttest28186\Model\InvoiceAgency\Person as InvoiceAgencyPerson;
 use Tactics\FodAttest28186\Model\Sender\Company;
 use Tactics\FodAttest28186\Model\Sender\Person;
 use Tactics\FodAttest28186\Model\Sender\Sender;
@@ -167,7 +169,7 @@ EOT;
 
         $xml = "<a1002_inkomstenjaar>$this->year</a1002_inkomstenjaar>";
 
-        if ($this->invoiceAgency instanceof Company) {
+        if ($this->invoiceAgency instanceof InvoiceAgencyCompany) {
             $xml .= sprintf('<a1005_registratienummer>%s</a1005_registratienummer>', $this->invoiceAgency->identifier());
         }
 
@@ -186,7 +188,7 @@ EOT;
     <a1020_taalcode>$languageCodeDutch</a1020_taalcode>
 EOT;
 
-        if ($this->invoiceAgency instanceof Person) {
+        if ($this->invoiceAgency instanceof InvoiceAgencyPerson) {
             $xml .= sprintf('<a1037_nationaalnr>%s</a1037_nationaalnr>', $this->invoiceAgency->identifier());
         }
 
@@ -240,7 +242,7 @@ EOT;
     {
         $this->sheetCounter++;
 
-        [$debtorCompanyNumber, $rrn, $country, $debtorDetails] = $this->prepareDebtorInfo($sheet->debtor());
+        [$rrn, $country, $debtorDetails] = $this->prepareDebtorInfo($sheet->debtor());
         if ($debtorDetails) {
             [$debtorName, $debtorFirstName, $debtorAddressCity, $debtorAddressLine, $debtorPostal] = $this->prepareDebtorDetails($debtorDetails);
         }
@@ -259,15 +261,17 @@ EOT;
         $xml = <<<EOT
     <Fiche28186>
     <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
-    <f2005_registratienummer>$debtorCompanyNumber</f2005_registratienummer>
+    <f2005_registratienummer>{$this->sender->identifier()}</f2005_registratienummer>
     <f2008_typefiche>28186</f2008_typefiche>
     <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
     <f2010_referentie>{$sheet->uid()->toString()}</f2010_referentie>
     <f2011_nationaalnr>$rrn</f2011_nationaalnr>
+    <f2012_geboortedatum/>
 EOT;
         if ($debtorDetails) {
-            $xml.= <<< EOT
+            $xml .= <<< EOT
                 <f2013_naam>$debtorName</f2013_naam>
+                <f2014_naampartner/>
                 <f2015_adres>$debtorAddressLine</f2015_adres>
 EOT;
             if ($country->value() === FodCountryCode::BELGIUM) {
@@ -277,9 +281,17 @@ EOT;
             $xml .= <<< EOT
                 <f2017_gemeente>$debtorAddressCity</f2017_gemeente>
  EOT;
+        } else {
+            $xml .= <<< EOT
+                <f2013_naam/>
+                <f2014_naampartner/>
+                <f2015_adres/>
+                <f2016_postcodebelgisch/>
+                <f2017_gemeente/>
+EOT;
         }
 
-        $xml.= <<< EOT
+        $xml .= <<< EOT
     <f2018_landwoonplaats>{$country->value()}</f2018_landwoonplaats>
     <f2028_typetraitement>{$sheet->type()->value()}</f2028_typetraitement>
     <f2029_enkelopgave325>0</f2029_enkelopgave325>
@@ -297,11 +309,41 @@ EOT;
         if ($certifier instanceof Certifier) {
             $xml .= <<<EOT
     <f86_2031_certificationautorisation>{$certifier->certificationCode()->value()}</f86_2031_certificationautorisation>
+EOT;
+        } else {
+            $xml .= <<<EOT
+    <f86_2031_certificationautorisation />
+EOT;
+        }
+
+        $totalAmount = $tariffCollection->sum();
+        $totalControlAmount = $totalAmount * 2;
+        $this->totalAmount += $totalControlAmount;
+
+        [$tariff1BeginDate, $tariff1EndDate, $tariff1Tariff, $tariff1Days, $tariff1Total] = $this->prepareTariff($tariffCollection, 1);
+        [$tariff2BeginDate, $tariff2EndDate, $tariff2Tariff, $tariff2Days, $tariff2Total] = $this->prepareTariff($tariffCollection, 2);
+        [$tariff3BeginDate, $tariff3EndDate, $tariff3Tariff, $tariff3Days, $tariff3Total] = $this->prepareTariff($tariffCollection, 3);
+        [$tariff4BeginDate, $tariff4EndDate, $tariff4Tariff, $tariff4Days, $tariff4Total] = $this->prepareTariff($tariffCollection, 4);
+
+        $xml .= <<<EOT
+                <f86_2055_begindate1>$tariff1BeginDate</f86_2055_begindate1>
+                <f86_2056_enddate1>$tariff1EndDate</f86_2056_enddate1>
+                <f86_2059_totaalcontrole>$totalControlAmount</f86_2059_totaalcontrole>
+                <f86_2060_amount1>$tariff1Total</f86_2060_amount1>
+                <f86_2061_amount2>$tariff2Total</f86_2061_amount2>
+                <f86_2062_amount3>$tariff3Total</f86_2062_amount3>
+                <f86_2063_amount4>$tariff4Total</f86_2063_amount4>
+                <f86_2064_totalamount>$totalAmount</f86_2064_totalamount>
+                <f86_2093_begindate2>$tariff2BeginDate</f86_2093_begindate2>
+EOT;
+
+        if ($certifier instanceof Certifier) {
+            $xml .= <<<EOT
     <f86_2100_certifierpostnr>$certifierPostal</f86_2100_certifierpostnr>
-    <f86_2109_certifiercbenumber>{$certifier->companyNumber()->value()}</f86_2109_certifiercbenumber>
-    <f86_2154_certifiermunicipality>$certifierAddressCity</f86_2154_certifiermunicipality>
-    <f86_2155_certifiername>$certifierName</f86_2155_certifiername>
-    <f86_2156_certifieradres>$certifierAddressLine</f86_2156_certifieradres>
+EOT;
+        } else {
+            $xml .= <<<EOT
+    <f86_2100_certifierpostnr />
 EOT;
         }
 
@@ -311,11 +353,47 @@ EOT;
     <f86_2102_childaddress>$childAddressLine</f86_2102_childaddress>
     <f86_2106_childname>$childName</f86_2106_childname>
     <f86_2107_childfirstname>$childFirstName</f86_2107_childfirstname>
-    <f86_2139_childpostnr>{$childAddress->postal()}</f86_2139_childpostnr>
-    <f86_2140_childmunicipality>{$childAddressCity}</f86_2140_childmunicipality>
-    <f86_2163_childbirthdate>$formattedChildDayOfBirth</f86_2163_childbirthdate>
+EOT;
+        } else {
+            $xml .= <<<EOT
+    <f86_2101_childcountry />
+    <f86_2102_childaddress />
+    <f86_2106_childname />
+    <f86_2107_childfirstname />
 EOT;
         }
+
+        if ($certifier instanceof Certifier) {
+            $xml .= <<<EOT
+    <f86_2109_certifiercbenumber>{$certifier->companyNumber()->value()}</f86_2109_certifiercbenumber>
+EOT;
+        } else {
+            $xml .= <<<EOT
+    <f86_2109_certifiercbenumber />
+EOT;
+        }
+
+        $xml .= <<<EOT
+    <f86_2110_numberofday1>$tariff1Days</f86_2110_numberofday1>
+    <f86_2111_dailytariff1>$tariff1Tariff</f86_2111_dailytariff1>
+    <f86_2113_numberofday2>$tariff2Days</f86_2113_numberofday2>
+    <f86_2115_dailytariff2>$tariff2Tariff</f86_2115_dailytariff2>
+    <f86_2116_numberofday3>$tariff3Days</f86_2116_numberofday3>
+    <f86_2117_dailytariff3>$tariff3Tariff</f86_2117_dailytariff3>
+    <f86_2119_numberofday4>$tariff4Days</f86_2119_numberofday4>
+    <f86_2120_dailytariff4>$tariff4Tariff</f86_2120_dailytariff4>
+EOT;
+
+        if ($childDetails) {
+            $xml .= <<<EOT
+    <f86_2139_childpostnr>{$childAddress->postal()}</f86_2139_childpostnr>
+    <f86_2140_childmunicipality>{$childAddressCity}</f86_2140_childmunicipality>
+EOT;
+        }
+
+        $xml .= <<<EOT
+    <f86_2144_enddate2>$tariff2EndDate</f86_2144_enddate2>
+EOT;
 
         if ($child instanceof ChildWithNationalRegistry) {
             $xml .= <<<EOT
@@ -323,25 +401,46 @@ EOT;
 EOT;
         }
 
-        foreach ($tariffCollection->getIterator() as $index => $tariff) {
-            $xml .= $this->tariff($index + 1, $tariff);
+        if ($certifier instanceof Certifier) {
+            $xml .= <<<EOT
+    <f86_2154_certifiermunicipality>$certifierAddressCity</f86_2154_certifiermunicipality>
+    <f86_2155_certifiername>$certifierName</f86_2155_certifiername>
+    <f86_2156_certifieradres>$certifierAddressLine</f86_2156_certifieradres>
+EOT;
         }
 
-        $totalAmount = $tariffCollection->sum();
+        $xml .= <<<EOT
+    <f86_2157_begindate3>$tariff3BeginDate</f86_2157_begindate3>
+    <f86_2158_enddate3>$tariff3EndDate</f86_2158_enddate3>
+    <f86_2161_begindate4>$tariff4BeginDate</f86_2161_begindate4>
+    <f86_2162_enddate4>$tariff4EndDate</f86_2162_enddate4>
+EOT;
 
-        $totalControlAmount = $totalAmount * 2;
-        $this->totalAmount += $totalControlAmount;
+        if ($childDetails) {
+            $xml .= <<<EOT
+    <f86_2163_childbirthdate>$formattedChildDayOfBirth</f86_2163_childbirthdate>
+EOT;
+        }
 
-        $xml .= "<f86_2064_totalamount>$totalAmount</f86_2064_totalamount>";
-        $xml .= "<f86_2059_totaalcontrole>$totalControlAmount</f86_2059_totaalcontrole>";
         $xml .= '</Fiche28186>';
 
         return $xml;
     }
 
+    private function prepareTariff(TariffCollection $tariffCollection, int $tariffNumber): array
+    {
+        $tariff = $tariffCollection->getTariff($tariffNumber);
+        $tariffBeginDate = $tariff ? $tariff->period()->begin()->format(self::DATE_FORMAT) : null;
+        $tariffEndDate = $tariff ? $tariff->period()->end()->format(self::DATE_FORMAT) : null;
+        $tariffTariff = $tariff ? $tariff->tariff() : null;
+        $tariffDays = $tariff ? $tariff->days() : null;
+        $tariffTotal = $tariff ? $tariffDays * $tariffTariff : null;
+
+        return [$tariffBeginDate, $tariffEndDate, $tariffTariff, $tariffDays, $tariffTotal];
+    }
+
     private function prepareDebtorInfo(Debtor $debtor): array
     {
-        $debtorCompanyNumber = $debtor->companyNumber() ?? '0';
         $rrn = $debtor->nationalRegistryNumber()->value();
 
         // Due to a bug/inconsistency in the tool we always need to provide the country code.
@@ -353,7 +452,7 @@ EOT;
 
         $debtorDetails = $debtor->details();
 
-        return [$debtorCompanyNumber, $rrn, $country, $debtorDetails];
+        return [$rrn, $country, $debtorDetails];
     }
 
     private function prepareDebtorDetails(DebtorDetails $debtorDetails): array
@@ -379,7 +478,7 @@ EOT;
     }
 
     //TODO: DebtorDetails and ChildDetails should be an interface so these two functions can be abstracted
-    private function prepareChildDetails(ChildDetails  $childDetails): array
+    private function prepareChildDetails(ChildDetails $childDetails): array
     {
         $childName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->familyName(), $this->nameMaxLength()));
         $childFirstName = $this->escapeInvalidXmlChars($this->formatMaxLength($childDetails->givenName(), $this->firstnameMaxLength()));
@@ -393,7 +492,7 @@ EOT;
         $childAddressLine = $this->escapeInvalidXmlChars(
             $this->formatMaxLength(
                 $childAddress->addressLine(),
-                $this->addressMaxLength()
+                $this->childAddressMaxLength()
             )
         );
         $formattedChildDayOfBirth = $childDetails->dayOfBirth()->format();
@@ -422,36 +521,18 @@ EOT;
         return [$certifierName, $certifierAddressCity, $certifierAddressLine, $certifierPostal];
     }
 
-    private function tariff(int $period, Tariff $tariff): string
-    {
-        $xmlMap = TariffXmlMapper::xmlMap($period);
-
-        $xml = "<" . $xmlMap[TariffXmlMapper::NUMBER_OF_DAYS] . ">" . $tariff->days() . "</" . $xmlMap[TariffXmlMapper::NUMBER_OF_DAYS] . ">";
-        $xml .= "<" . $xmlMap[TariffXmlMapper::TARIFF] . ">" . $tariff->tariff() . "</" . $xmlMap[TariffXmlMapper::TARIFF] . ">";
-        $xml .= "<" . $xmlMap[TariffXmlMapper::AMOUNT] . ">" . ($tariff->tariff() * $tariff->days()) . "</" . $xmlMap[TariffXmlMapper::AMOUNT] . ">";
-        $xml .= "<" . $xmlMap[TariffXmlMapper::STARTDATE] . ">" . $tariff->period()->begin()->format(self::DATE_FORMAT) . "</" . $xmlMap[TariffXmlMapper::STARTDATE] . ">";
-        $xml .= "<" . $xmlMap[TariffXmlMapper::ENDDATE] . ">" . $tariff->period()->end()->format(self::DATE_FORMAT) . "</" . $xmlMap[TariffXmlMapper::ENDDATE] . ">";
-
-        return $xml;
-    }
-
     private function controlNumbers(): string
     {
         $totalRecords = $this->sheetCounter + 2;
         $triangularNumberRecords = ($this->sheetCounter * ($this->sheetCounter + 1)) / 2;
 
-        $xml = <<<EOT
+        return <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
+    <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
     <r8010_aantalrecords>$totalRecords</r8010_aantalrecords>
     <r8011_controletotaal>$triangularNumberRecords</r8011_controletotaal>
     <r8012_controletotaal>$this->totalAmount</r8012_controletotaal>
 EOT;
-
-        if ($this->invoiceAgency instanceof Company) {
-            $xml .= sprintf('<r8005_registratienummer>%s</r8005_registratienummer>', $this->invoiceAgency->identifier());
-        }
-
-        return $xml;
     }
 
     private function controlNumbersTotal(): string
@@ -491,6 +572,17 @@ EOT;
         }
 
         return 200;
+    }
+
+    /**
+     * Return the max length an address can be. Specs changed for fiscal year 2022.
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function childAddressMaxLength(): int
+    {
+        return 41;
     }
 
     /**
