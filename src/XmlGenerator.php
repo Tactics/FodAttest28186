@@ -19,7 +19,6 @@ use Tactics\FodAttest28186\Model\Sender\Person;
 use Tactics\FodAttest28186\Model\Sender\Sender;
 use Tactics\FodAttest28186\Model\Tariff\Tariff;
 use Tactics\FodAttest28186\Model\Tariff\TariffCollection;
-use Tactics\FodAttest28186\Model\Tariff\TariffXmlMapper;
 use Tactics\FodAttest28186\Model\TaxSheet\TaxSheet;
 use Tactics\FodAttest28186\Model\TaxSheet\TaxSheetMap;
 
@@ -147,6 +146,10 @@ EOT;
 
         if ($this->invoiceAgency instanceof InvoiceAgencyCompany) {
             $xml .= sprintf('<a1005_registratienummer>%s</a1005_registratienummer>', $this->invoiceAgency->identifier());
+        }
+
+        if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
+            $xml .= sprintf('<a1007_division>%s</a1007_division>', $this->invoiceAgency->division()->value());
         }
 
         $splitNameNl = $splitName;
