@@ -98,4 +98,9 @@ final class Company implements Sender
     {
         return $this->senderContact->name();
     }
+
+    public function division(): ?DivisionNumber
+    {
+        return $this->division;
+    }
 }

@@ -26,7 +26,7 @@ final class InvoiceAgencyFactory
                     $companyNumber,
                 );
 
-                if ($company->division()) {
+                if ($sender->division()) {
                     $company = $company->withDivision($company->division());
                 }
                 return $company;
