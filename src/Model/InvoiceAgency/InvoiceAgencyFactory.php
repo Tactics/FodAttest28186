@@ -27,7 +27,7 @@ final class InvoiceAgencyFactory
                 );
 
                 if ($sender->division()) {
-                    $company = $company->withDivision($company->division());
+                    $company = $company->withDivision($sender->division());
                 }
                 return $company;
             case $sender instanceof SenderPerson:
