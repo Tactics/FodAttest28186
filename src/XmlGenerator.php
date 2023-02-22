@@ -86,7 +86,7 @@ final class XmlGenerator
 
     private function senderInfo(): string
     {
-        [$date, $senderName, $senderAddress] = $this->prepareSenderInfo();
+        [$date, $senderName, $senderAddress, $senderEmail] = $this->prepareSenderInfo();
 
         $xml = <<<EOT
     <v0002_inkomstenjaar>$this->year</v0002_inkomstenjaar>
@@ -96,10 +96,10 @@ final class XmlGenerator
     <v0015_adres>$senderAddress</v0015_adres>
     <v0016_postcode>{$this->sender->address()->postal()}</v0016_postcode>
     <v0017_gemeente>{$this->sender->address()->city()}</v0017_gemeente>
-    <v0018_telefoonnummer>{$this->sender->phoneNumber()}</v0018_telefoonnummer>
+    <v0018_telefoonnummer>{$this->sender->phoneNumber()->value()}</v0018_telefoonnummer>
     <v0021_contactpersoon>{$this->sender->contactName()}</v0021_contactpersoon>
     <v0022_taalcode>{$this->sender->contactLanguageCode()->value()}</v0022_taalcode>
-    <v0023_emailadres>{$this->sender->email()}</v0023_emailadres>
+    <v0023_emailadres>$senderEmail</v0023_emailadres>
 EOT;
 
         if ($this->sender instanceof Company) {
@@ -135,7 +135,14 @@ EOT;
             )
         );
 
-        return [$date, $senderName, $senderAddress];
+        $senderEmail = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->sender->email(),
+                $this->emailMaxLength()
+            )
+        );
+
+        return [$date, $senderName, $senderAddress, $senderEmail];
     }
 
     private function declarationInfo(): string
@@ -621,6 +628,19 @@ EOT;
          * capped at 31 characters. The max length of a name is therefore 28 + 31 characters.
          */
         return 28 + 31;
+    }
+
+    /**
+     * TODO: contacted FOD to check this spec. Email generally has a max length of 254 characters.
+     *
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function emailMaxLength(): int
+    {
+        return 44;
     }
 
     /**
