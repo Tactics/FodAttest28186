@@ -20,11 +20,16 @@ final class InvoiceAgencyFactory
         switch ($sender) {
             case $sender instanceof SenderCompany:
                 $companyNumber = CompanyNumber::fromString($sender->identifier());
-                return Company::create(
+                $company = Company::create(
                     $sender->name(),
                     $sender->address(),
                     $companyNumber,
                 );
+
+                if ($company->division()) {
+                    $company = $company->withDivision($company->division());
+                }
+                return $company;
             case $sender instanceof SenderPerson:
                 $nationalRegistryNumber = NationalRegistryNumber::fromString($sender->identifier());
                 return Person::create(

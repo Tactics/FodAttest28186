@@ -5,6 +5,7 @@ namespace Tactics\FodAttest28186\Model\Sender;
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
+use Tactics\FodAttest28186\ValueObject\DivisionNumber;
 
 /**
  * The instance that is sending the data to the FOD.
@@ -23,6 +24,8 @@ final class Company implements Sender
     private CompanyNumber $companyNumber;
 
     private SenderContact $senderContact;
+
+    private ?DivisionNumber $division = null;
 
     /**
      * @param string $name
@@ -51,6 +54,14 @@ final class Company implements Sender
         SenderContact $senderContact
     ): Company {
         return new self($name, $address, $phoneNumber, $email, $companyNumber, $senderContact);
+    }
+
+    public function withDivision(DivisionNumber $division): self
+    {
+        $clone = clone $this;
+        $clone->division = $division;
+
+        return $clone;
     }
 
     public function name(): string
