@@ -32,5 +32,4 @@ final class PhoneNumber
     {
         return $this->phoneNumber;
     }
-
 }

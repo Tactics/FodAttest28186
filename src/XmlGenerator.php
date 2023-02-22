@@ -519,7 +519,7 @@ EOT;
         $totalRecords = $this->sheetCounter + 2;
         $triangularNumberRecords = ($this->sheetCounter * ($this->sheetCounter + 1)) / 2;
 
-        $xml= <<<EOT
+        $xml = <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
     <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
     EOT;
@@ -528,7 +528,7 @@ EOT;
             $xml .= sprintf('<r8007_division>%s</r8007_division>', $this->sender->division()->value());
         }
 
-        $xml.= <<<EOT
+        $xml .= <<<EOT
     <r8010_aantalrecords>$totalRecords</r8010_aantalrecords>
     <r8011_controletotaal>$triangularNumberRecords</r8011_controletotaal>
     <r8012_controletotaal>$this->totalAmount</r8012_controletotaal>
