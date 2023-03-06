@@ -7,7 +7,7 @@ use Assert\AssertionFailedException;
 
 final class DivisionNumber
 {
-    private int $value;
+    private $value;
 
     /**
      * @param int $value

@@ -23,7 +23,7 @@ final class InvoiceAgencyFactory
                 $company = Company::create(
                     $sender->name(),
                     $sender->address(),
-                    $companyNumber,
+                    $companyNumber
                 );
 
                 if ($sender->division()) {
