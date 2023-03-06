@@ -248,7 +248,7 @@ EOT;
     <Fiche28186>
     <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
     <f2005_registratienummer>{$this->sender->identifier()}</f2005_registratienummer>
-    EOT;
+EOT;
 
         if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
             $xml .= sprintf('<f2007_division>%s</f2007_division>', $this->invoiceAgency->division()->value());
@@ -273,7 +273,7 @@ EOT;
 
             $xml .= <<< EOT
                 <f2017_gemeente>$debtorAddressCity</f2017_gemeente>
- EOT;
+EOT;
         } else {
             $xml .= <<< EOT
                 <f2013_naam/>
@@ -522,7 +522,7 @@ EOT;
         $xml = <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
     <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
-    EOT;
+EOT;
 
         if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
             $xml .= sprintf('<r8007_division>%s</r8007_division>', $this->invoiceAgency->division()->value());
