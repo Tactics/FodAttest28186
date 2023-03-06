@@ -5,6 +5,7 @@ namespace Tactics\FodAttest28186\Model\Sender;
 use Tactics\FodAttest28186\Enum\FodLanguageCode;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
+use Tactics\FodAttest28186\ValueObject\PhoneNumber;
 
 /**
  * The instance that is sending the data to the FOD.
@@ -23,7 +24,7 @@ final class Person implements Sender
     private $address;
 
     /**
-     * @var string
+     * @var PhoneNumber
      */
     private $phoneNumber;
 
@@ -45,16 +46,16 @@ final class Person implements Sender
     /**
      * @param string $name
      * @param Address $address
-     * @param string $phoneNumber
+     * @param PhoneNumber $phoneNumber
      * @param string $email
      * @param NationalRegistryNumber $nationalRegistryNumber
      * @param FodLanguageCode $languageCode
      */
-    public function __construct(string $name, Address $address, string $phoneNumber, string $email, NationalRegistryNumber $nationalRegistryNumber, FodLanguageCode $languageCode)
+    public function __construct(string $name, Address $address, PhoneNumber $phoneNumber, string $email, NationalRegistryNumber $nationalRegistryNumber, FodLanguageCode $languageCode)
     {
         $this->name = trim($name);
         $this->address = $address;
-        $this->phoneNumber = trim($phoneNumber);
+        $this->phoneNumber = $phoneNumber;
         $this->email = trim($email);
         $this->nationalRegistryNumber = $nationalRegistryNumber;
         $this->languageCode = $languageCode;
@@ -63,7 +64,7 @@ final class Person implements Sender
     public static function create(
         string $name,
         Address $address,
-        string $phoneNumber,
+        PhoneNumber $phoneNumber,
         string $email,
         NationalRegistryNumber $nationalRegistryNumber,
         FodLanguageCode $languageCode
@@ -81,7 +82,7 @@ final class Person implements Sender
         return $this->address;
     }
 
-    public function phoneNumber(): string
+    public function phoneNumber(): PhoneNumber
     {
         return $this->phoneNumber;
     }

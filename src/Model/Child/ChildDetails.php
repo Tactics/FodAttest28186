@@ -60,7 +60,6 @@ final class ChildDetails
         Address $address,
         DayOfBirth $dayOfBirth
     ): ChildDetails {
-
         if (empty($givenName)) {
             throw new EmptyGivenNameException(
                 'A child must have a given name'

@@ -5,6 +5,7 @@ namespace Tactics\FodAttest28186\Model\InvoiceAgency;
 use Tactics\FodAttest28186\Model\Certifier\Certifier;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\CompanyNumber;
+use Tactics\FodAttest28186\ValueObject\DivisionNumber;
 
 /**
  * The instance to whom the care was paid. Also known as the organiser.
@@ -34,6 +35,11 @@ final class Company implements InvoiceAgency
     private $certifier = null;
 
     /**
+     * @var DivisionNumber|null
+     */
+    private $division = null;
+
+    /**
      * @param string $name
      * @param Address $address
      * @param CompanyNumber $companyNumber
@@ -51,6 +57,14 @@ final class Company implements InvoiceAgency
         CompanyNumber $companyNumber
     ): Company {
         return new self($name, $address, $companyNumber);
+    }
+
+    public function withDivision(DivisionNumber $division): self
+    {
+        $clone = clone $this;
+        $clone->division = $division;
+
+        return $clone;
     }
 
     public function withCertifier(Certifier $certifier): InvoiceAgency
@@ -79,5 +93,10 @@ final class Company implements InvoiceAgency
     public function certifier(): ?Certifier
     {
         return $this->certifier;
+    }
+
+    public function division(): ?DivisionNumber
+    {
+        return $this->division;
     }
 }

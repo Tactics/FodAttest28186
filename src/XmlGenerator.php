@@ -111,7 +111,7 @@ final class XmlGenerator
 
     private function senderInfo(): string
     {
-        [$date, $senderName, $senderAddress] = $this->prepareSenderInfo();
+        [$date, $senderName, $senderAddress, $senderEmail] = $this->prepareSenderInfo();
 
         $xml = <<<EOT
     <v0002_inkomstenjaar>$this->year</v0002_inkomstenjaar>
@@ -121,10 +121,10 @@ final class XmlGenerator
     <v0015_adres>$senderAddress</v0015_adres>
     <v0016_postcode>{$this->sender->address()->postal()}</v0016_postcode>
     <v0017_gemeente>{$this->sender->address()->city()}</v0017_gemeente>
-    <v0018_telefoonnummer>{$this->sender->phoneNumber()}</v0018_telefoonnummer>
+    <v0018_telefoonnummer>{$this->sender->phoneNumber()->value()}</v0018_telefoonnummer>
     <v0021_contactpersoon>{$this->sender->contactName()}</v0021_contactpersoon>
     <v0022_taalcode>{$this->sender->contactLanguageCode()->value()}</v0022_taalcode>
-    <v0023_emailadres>{$this->sender->email()}</v0023_emailadres>
+    <v0023_emailadres>$senderEmail</v0023_emailadres>
 EOT;
 
         if ($this->sender instanceof Company) {
@@ -160,7 +160,14 @@ EOT;
             )
         );
 
-        return [$date, $senderName, $senderAddress];
+        $senderEmail = $this->escapeInvalidXmlChars(
+            $this->formatMaxLength(
+                $this->sender->email(),
+                $this->emailMaxLength()
+            )
+        );
+
+        return [$date, $senderName, $senderAddress, $senderEmail];
     }
 
     private function declarationInfo(): string
@@ -171,6 +178,10 @@ EOT;
 
         if ($this->invoiceAgency instanceof InvoiceAgencyCompany) {
             $xml .= sprintf('<a1005_registratienummer>%s</a1005_registratienummer>', $this->invoiceAgency->identifier());
+        }
+
+        if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
+            $xml .= sprintf('<a1007_division>%s</a1007_division>', $this->invoiceAgency->division()->value());
         }
 
         $splitNameNl = $splitName;
@@ -262,6 +273,13 @@ EOT;
     <Fiche28186>
     <f2002_inkomstenjaar>$this->year</f2002_inkomstenjaar>
     <f2005_registratienummer>{$this->sender->identifier()}</f2005_registratienummer>
+    EOT;
+
+        if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
+            $xml .= sprintf('<f2007_division>%s</f2007_division>', $this->invoiceAgency->division()->value());
+        }
+
+        $xml .= <<<EOT
     <f2008_typefiche>28186</f2008_typefiche>
     <f2009_volgnummer>$this->sheetCounter</f2009_volgnummer>
     <f2010_referentie>{$sheet->uid()->toString()}</f2010_referentie>
@@ -526,13 +544,22 @@ EOT;
         $totalRecords = $this->sheetCounter + 2;
         $triangularNumberRecords = ($this->sheetCounter * ($this->sheetCounter + 1)) / 2;
 
-        return <<<EOT
+        $xml = <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
     <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
+    EOT;
+
+        if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
+            $xml .= sprintf('<r8007_division>%s</r8007_division>', $this->invoiceAgency->division()->value());
+        }
+
+        $xml .= <<<EOT
     <r8010_aantalrecords>$totalRecords</r8010_aantalrecords>
     <r8011_controletotaal>$triangularNumberRecords</r8011_controletotaal>
     <r8012_controletotaal>$this->totalAmount</r8012_controletotaal>
 EOT;
+
+        return $xml;
     }
 
     private function controlNumbersTotal(): string
@@ -642,6 +669,19 @@ EOT;
          * capped at 31 characters. The max length of a name is therefore 28 + 31 characters.
          */
         return 28 + 31;
+    }
+
+    /**
+     * TODO: contacted FOD to check this spec. Email generally has a max length of 254 characters.
+     *
+     * Return the max length a name can be
+     * Keep backwards compatibility (for 7 years) because specs can change over time
+     *
+     * @return int
+     */
+    private function emailMaxLength(): int
+    {
+        return 44;
     }
 
     /**
