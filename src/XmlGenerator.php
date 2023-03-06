@@ -547,7 +547,7 @@ EOT;
         $xml = <<<EOT
     <r8002_inkomstenjaar>$this->year</r8002_inkomstenjaar>
     <r8005_registratienummer>{$this->sender->identifier()}</r8005_registratienummer>
-    EOT;
+EOT;
 
         if ($this->invoiceAgency instanceof InvoiceAgencyCompany && $this->invoiceAgency->division()) {
             $xml .= sprintf('<r8007_division>%s</r8007_division>', $this->invoiceAgency->division()->value());
