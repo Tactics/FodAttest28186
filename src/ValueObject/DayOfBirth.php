@@ -63,4 +63,12 @@ final class DayOfBirth
     {
         return $this->dayOfBirth->format('d-m-Y');
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function toPhpDateTime(): \DateTime
+    {
+        return $this->dayOfBirth->toDateTime();
+    }
 }
