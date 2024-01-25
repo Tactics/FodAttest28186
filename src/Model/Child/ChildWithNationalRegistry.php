@@ -37,7 +37,7 @@ final class ChildWithNationalRegistry implements Child
         }
 
         if (($dayOfBirthFromNationalRegistryNumber instanceof DayOfBirth) && !$dayOfBirthFromNationalRegistryNumber->isSameDay($this->dayOfBirth->toPhpDateTime())) {
-            Throw new NonMatchingBirthdayException('Given birthday does not match with day of birth found in national registry number');
+            throw new NonMatchingBirthdayException('Given birthday does not match with day of birth found in national registry number');
         }
     }
 
