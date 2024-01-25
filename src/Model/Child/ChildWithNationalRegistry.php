@@ -2,6 +2,7 @@
 
 namespace Tactics\FodAttest28186\Model\Child;
 
+use Tactics\FodAttest28186\Exception\NonMatchingBirthdayException;
 use Tactics\FodAttest28186\ValueObject\Address;
 use Tactics\FodAttest28186\ValueObject\DayOfBirth;
 use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
@@ -13,22 +14,38 @@ use Tactics\FodAttest28186\ValueObject\NationalRegistryNumber;
 final class ChildWithNationalRegistry implements Child
 {
     private NationalRegistryNumber $nationalRegistryNumber;
+    private DayOfBirth $dayOfBirth;
     private ?ChildDetails $details = null;
     private bool $severelyDisabled = false;
 
     /**
      * @param NationalRegistryNumber $nationalRegistryNumber
+     * @param DayOfBirth $dayOfBirth
+     * @throws NonMatchingBirthdayException
      */
     private function __construct(
-        NationalRegistryNumber $nationalRegistryNumber
+        NationalRegistryNumber $nationalRegistryNumber,
+        DayOfBirth  $dayOfBirth
     ) {
         $this->nationalRegistryNumber = $nationalRegistryNumber;
+        $this->dayOfBirth = $dayOfBirth;
+
+        try {
+            $dayOfBirthFromNationalRegistryNumber = $this->nationalRegistryNumber->dayOfBirth();
+        } catch (\Throwable $exception) {
+            $dayOfBirthFromNationalRegistryNumber = null;
+        }
+
+        if (($dayOfBirthFromNationalRegistryNumber instanceof DayOfBirth) && !$dayOfBirthFromNationalRegistryNumber->isSameDay($this->dayOfBirth->toPhpDateTime())) {
+            throw new NonMatchingBirthdayException('Given birthday does not match with day of birth found in national registry number');
+        }
     }
 
     public static function create(
-        NationalRegistryNumber $nationalRegistryNumber
+        NationalRegistryNumber $nationalRegistryNumber,
+        DayOfBirth  $dayOfBirth
     ): self {
-        return new self($nationalRegistryNumber);
+        return new self($nationalRegistryNumber, $dayOfBirth);
     }
 
     public function withSevereDisability(): ChildWithNationalRegistry
@@ -48,7 +65,7 @@ final class ChildWithNationalRegistry implements Child
             $familyName,
             $givenName,
             $address,
-            $this->nationalRegistryNumber->dayOfBirth()
+            $this->dayOfBirth()
         );
         $new->details = $details;
         return $new;
@@ -81,6 +98,6 @@ final class ChildWithNationalRegistry implements Child
 
     public function dayOfBirth(): DayOfBirth
     {
-        return $this->nationalRegistryNumber->dayOfBirth();
+        return $this->dayOfBirth;
     }
 }
