@@ -656,7 +656,7 @@ EOT;
      */
     private function emailMaxLength(): int
     {
-        return 44;
+        return 254;
     }
 
     /**
